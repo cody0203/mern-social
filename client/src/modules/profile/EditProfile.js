@@ -83,12 +83,12 @@ const EditProfile = () => {
           <CustomInput
             label="Password"
             name="password"
-            rules={[
-              {
-                required: true,
-                message: "Please input your password!",
-              },
-            ]}
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: "Please input your password!",
+            //   },
+            // ]}
             type="password"
           />
 
