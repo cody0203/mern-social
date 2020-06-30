@@ -1,8 +1,8 @@
-import get from "lodash/get";
-import styled from "styled-components";
-import { Menu, Layout } from "antd";
-import { MenuOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import get from 'lodash/get';
+import styled from 'styled-components';
+import { Menu, Layout } from 'antd';
+import { MenuOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
 const { Header } = Layout;
 
@@ -10,7 +10,11 @@ const HeaderStyled = styled(Header)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: ${({ theme }) => get(theme, "colors.primary")};
+  background-color: ${({ theme }) => get(theme, 'colors.primary')};
+
+  @media (max-width: 767px) {
+    padding: 0 16px;
+  }
 `;
 
 const LogoStyled = styled(Link)`
@@ -22,7 +26,7 @@ const LogoStyled = styled(Link)`
 `;
 
 const MenuStyled = styled(Menu)`
-  background-color: ${({ theme }) => get(theme, "colors.primary")};
+  background-color: ${({ theme }) => get(theme, 'colors.primary')};
   border-bottom: none;
 
   .ant-menu-item {
