@@ -11,3 +11,6 @@ export const removeUser = (id) => request.delete(`${endPoints.USER}/${id}`);
 
 export const updateUser = ({ userId, params }) =>
   request.put(`${endPoints.USER}/${userId}`, params);
+
+export const fetchUserAvatar = (id) =>
+  request.get(`${endPoints.USER}/avatar/${id}`);

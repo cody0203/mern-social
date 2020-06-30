@@ -1,35 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import get from 'lodash/get';
-import isEmpty from 'lodash/isEmpty';
-import { Avatar, Button } from 'antd';
-import { UserOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useHistory, Link } from 'react-router-dom';
-import moment from 'moment';
+import React, { useEffect, useState } from "react";
+import get from "lodash/get";
+import isEmpty from "lodash/isEmpty";
+import { Avatar, Button } from "antd";
+import { UserOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, useHistory, Link } from "react-router-dom";
+import moment from "moment";
 
-import auth from '../../system/auth/auth-helper';
+import auth from "../../system/auth/auth-helper";
+import * as endPoints from "../../system/request/end-point";
 
-import * as actions from '../../system/store/user/user.actions';
+import * as actions from "../../system/store/user/user.actions";
 
-import CustomHeader from '../common/components/CustomHeader';
-import CustomDeleteConfirmModal from '../common/components/CustomDeleteConfirmModal';
-import CustomCard from '../common/components/CustomCard';
-import CustomAvatar from '../common/components/CustomAvatar';
+import CustomHeader from "../common/components/CustomHeader";
+import CustomDeleteConfirmModal from "../common/components/CustomDeleteConfirmModal";
+import CustomCard from "../common/components/CustomCard";
+import CustomAvatar from "../common/components/CustomAvatar";
 
-import Styled from './Profile.styles';
+import Styled from "./Profile.styles";
 
 const Profile = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const dispatch = useDispatch();
   const { userId } = useParams();
   const history = useHistory();
-  const { userProfileLoading, userProfileData } = useSelector((store) => get(store, 'userReducer.userProfile'));
-  const { removeUserLoading } = useSelector((store) => get(store, 'userReducer'));
-  const { userInfo } = useSelector((store) => get(store, 'authReducer'));
+  const { userProfileLoading, userProfileData } = useSelector((store) =>
+    get(store, "userReducer.userProfile")
+  );
+  const { removeUserLoading } = useSelector((store) =>
+    get(store, "userReducer")
+  );
+  const { userInfo } = useSelector((store) => get(store, "authReducer"));
 
-  const name = get(userProfileData, 'name');
-  const email = get(userProfileData, 'email');
-  const created = get(userProfileData, 'created');
+  const name = get(userProfileData, "name");
+  const email = get(userProfileData, "email");
+  const created = get(userProfileData, "created");
+  const bio = get(userProfileData, "bio");
+  const avatar = get(userProfileData, "avatar");
 
   useEffect(() => {
     dispatch(actions.fetchUserStart(userId));
@@ -38,7 +45,7 @@ const Profile = () => {
   useEffect(() => {
     if (!auth.isAuthenticated()) {
       closeModalHandler();
-      history.push('/');
+      history.push("/");
     }
   }, [auth.isAuthenticated()]);
 
@@ -59,21 +66,40 @@ const Profile = () => {
       {userProfileLoading ? null : (
         <CustomCard title={<CustomHeader>Profile</CustomHeader>}>
           <Styled.TopStyled>
-            <CustomAvatar size={40} />
-            <Styled.TextInfoStyled>
-              <p>{name}</p>
-              <p>{email}</p>
-            </Styled.TextInfoStyled>
-          </Styled.TopStyled>
-          <Styled.BottomStyled>
-            <p>Joined: {moment(created).format('YYYY-MM-DD')}</p>
-
+            <Styled.TopContentStyled>
+              <CustomAvatar
+                size={40}
+                src={
+                  avatar
+                    ? `http://localhost:8080/api/user/avatar/${userId}?${new Date().getTime()}`
+                    : null
+                }
+              />
+              <Styled.TextInfoStyled>
+                <p>{name}</p>
+                <p>{email}</p>
+              </Styled.TextInfoStyled>
+            </Styled.TopContentStyled>
             <div>
               <Link to={`/user/edit/${userId}`}>
-                <Styled.EditButtonStyled icon={<EditOutlined />} type='primary' shape='circle' />
+                <Styled.EditButtonStyled
+                  icon={<EditOutlined />}
+                  type="primary"
+                  shape="circle"
+                />
               </Link>
-              <Button danger icon={<DeleteOutlined />} shape='circle' onClick={openModalHandler} />
+              <Button
+                danger
+                icon={<DeleteOutlined />}
+                shape="circle"
+                onClick={openModalHandler}
+              />
             </div>
+          </Styled.TopStyled>
+          <Styled.BottomStyled>
+            <p>{bio}</p>
+
+            <p>Joined: {moment(created).format("YYYY-MM-DD")}</p>
           </Styled.BottomStyled>
         </CustomCard>
       )}
@@ -81,8 +107,8 @@ const Profile = () => {
       <CustomDeleteConfirmModal
         visible={isDeleteModalOpen}
         onCancel={closeModalHandler}
-        title='Delete Account'
-        desc='Confirm to delete your account.'
+        title="Delete Account"
+        desc="Confirm to delete your account."
         onOk={removeUserHandler}
         loading={removeUserLoading}
       />

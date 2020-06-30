@@ -38,6 +38,7 @@ function* signUp({ payload }) {
 function* fetchUser({ payload }) {
   try {
     const response = yield call(apis.fetchUser, payload);
+    const avatar = yield call(apis.fetchUserAvatar, payload);
     const data = response.data;
 
     yield put(actions.fetchUserSuccess(data));
