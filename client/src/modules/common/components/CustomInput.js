@@ -1,11 +1,17 @@
-import React from "react";
-import { Input, Form } from "antd";
+import React from 'react';
+import { Input, Form } from 'antd';
+
+const { TextArea } = Input;
 
 const CustomInput = ({ label, name, rules, type }) => {
   let input = <Input />;
 
-  if (type === "password") {
+  if (type === 'password') {
     input = <Input.Password />;
+  }
+
+  if (type === 'textarea') {
+    input = <TextArea rows={4} />;
   }
 
   return (
