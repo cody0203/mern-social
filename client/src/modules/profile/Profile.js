@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import get from "lodash/get";
-import isEmpty from "lodash/isEmpty";
+import find from "lodash/find";
 import { Avatar, Button } from "antd";
 import { UserOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,16 +27,18 @@ const Profile = () => {
   const { userProfileLoading, userProfileData } = useSelector((store) =>
     get(store, "userReducer.userProfile")
   );
-  const { removeUserLoading } = useSelector((store) =>
+  const { removeUserLoading, followingUserLoading } = useSelector((store) =>
     get(store, "userReducer")
   );
   const { userInfo } = useSelector((store) => get(store, "authReducer"));
-
+  const id = get(userInfo, "_id");
   const name = get(userProfileData, "name");
   const email = get(userProfileData, "email");
   const created = get(userProfileData, "created");
   const bio = get(userProfileData, "bio");
   const avatar = get(userProfileData, "avatar");
+  const followers = get(userProfileData, "followers");
+  const isFollowed = find(followers, { _id: id });
 
   useEffect(() => {
     dispatch(actions.fetchUserStart(userId));
@@ -61,6 +63,32 @@ const Profile = () => {
     dispatch(actions.removeUserStart(userId));
   };
 
+  const followUserHandler = () => {
+    dispatch(actions.followUserStart({ followingId: userId, followerId: id }));
+  };
+
+  let followButton = (
+    <Button
+      type="primary"
+      onClick={followUserHandler}
+      loading={followingUserLoading}
+    >
+      Follow
+    </Button>
+  );
+
+  if (isFollowed) {
+    followButton = (
+      <Button
+        type="primary"
+        // onClick={unFollowUserHandler}
+        // loading={unFollowUserLoading}
+      >
+        Unfollow
+      </Button>
+    );
+  }
+
   return (
     <div>
       {userProfileLoading ? null : (
@@ -68,7 +96,7 @@ const Profile = () => {
           <Styled.TopStyled>
             <Styled.TopContentStyled>
               <CustomAvatar
-                size={40}
+                size={70}
                 src={
                   avatar
                     ? `http://localhost:8080/api/user/avatar/${userId}?${new Date().getTime()}`
@@ -76,25 +104,29 @@ const Profile = () => {
                 }
               />
               <Styled.TextInfoStyled>
-                <p>{name}</p>
+                <Styled.NameStyled>{name}</Styled.NameStyled>
                 <p>{email}</p>
               </Styled.TextInfoStyled>
             </Styled.TopContentStyled>
-            <div>
-              <Link to={`/user/edit/${userId}`}>
-                <Styled.EditButtonStyled
-                  icon={<EditOutlined />}
-                  type="primary"
+            {id === userId ? (
+              <div>
+                <Link to={`/user/edit/${userId}`}>
+                  <Styled.EditButtonStyled
+                    icon={<EditOutlined />}
+                    type="primary"
+                    shape="circle"
+                  />
+                </Link>
+                <Button
+                  danger
+                  icon={<DeleteOutlined />}
                   shape="circle"
+                  onClick={openModalHandler}
                 />
-              </Link>
-              <Button
-                danger
-                icon={<DeleteOutlined />}
-                shape="circle"
-                onClick={openModalHandler}
-              />
-            </div>
+              </div>
+            ) : (
+              <>{followButton}</>
+            )}
           </Styled.TopStyled>
           <Styled.BottomStyled>
             <p>{bio}</p>

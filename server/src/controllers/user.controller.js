@@ -87,11 +87,53 @@ const avatar = async (req, res, next) => {
   return res.send({});
 };
 
+const addFollowing = async (req, res, next) => {
+  try {
+    const { followerId, followingId } = get(req, "body");
+
+    await User.findByIdAndUpdate(followerId, {
+      $push: { following: followingId },
+    });
+
+    next();
+  } catch (err) {
+    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  }
+};
+
+const addFollower = async (req, res, next) => {
+  try {
+    const { followerId, followingId } = get(req, "body");
+
+    console.log(followerId, followingId);
+    const user = await User.findByIdAndUpdate(
+      followingId,
+      {
+        $push: { followers: followerId },
+      },
+      { new: true }
+    )
+      .select("name email updated created bio avatar")
+      .populate("following", "_id name")
+      .populate("followers", "_id name")
+      .exec();
+
+    return res.status(200).json({ message: "Successfully", data: user });
+  } catch (err) {
+    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  }
+};
+
+const removeFollowing = async (req, res, next) => {};
+const removeFollower = async (req, res, next) => {};
+
 const userById = async (req, res, next, id) => {
   try {
-    const user = await User.findById(id).select(
-      "name email updated created bio avatar"
-    );
+    const user = await User.findById(id)
+      .select("name email updated created bio avatar")
+      .populate("following", "_id name")
+      .populate("followers", "_id name")
+      .exec();
 
     if (!user) {
       return res.status(400).json({ error: "User not found" });
@@ -104,4 +146,16 @@ const userById = async (req, res, next, id) => {
   }
 };
 
-export default { list, create, read, update, remove, userById, avatar };
+export default {
+  list,
+  create,
+  read,
+  update,
+  remove,
+  userById,
+  avatar,
+  addFollowing,
+  addFollower,
+  removeFollowing,
+  removeFollower,
+};

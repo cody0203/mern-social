@@ -14,7 +14,7 @@ const BoxTitleStyled = styled.p`
 const TopStyled = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   padding-bottom: 16px;
   border-bottom: 1px solid ${({ theme }) => get(theme, "colors.lineColor")};
 `;
@@ -24,7 +24,15 @@ const TopContentStyled = styled.div`
 `;
 
 const TextInfoStyled = styled.div`
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
   margin-left: 16px;
+`;
+
+const NameStyled = styled.p`
+  font-size: 16px;
+  font-weight: bold;
 `;
 
 const BottomStyled = styled.div`
@@ -43,4 +51,5 @@ export default {
   BottomStyled,
   EditButtonStyled,
   TopContentStyled,
+  NameStyled,
 };

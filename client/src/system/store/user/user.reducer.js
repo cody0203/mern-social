@@ -19,6 +19,7 @@ const INITIAL_STATE = {
     updateUserError: null,
   },
   removeUserLoading: false,
+  followUserLoading: false,
   error: null,
 };
 
@@ -161,6 +162,29 @@ const userReducer = (state = INITIAL_STATE, action) => {
           signUpLoading: false,
           signUpStatus: false,
         },
+      };
+
+    case types.FOLLOW_USER.START:
+      return {
+        ...state,
+        followUserLoading: true,
+      };
+
+    case types.FOLLOW_USER.SUCCESS:
+      return {
+        ...state,
+        followUserLoading: false,
+        userProfile: {
+          ...state.userProfile,
+          userProfileData: action.payload,
+        },
+      };
+
+    case types.FOLLOW_USER.FAILURE:
+      return {
+        ...state,
+        followUserLoading: false,
+        error: action.payload,
       };
 
     case types.CLEAR_USER_STATE:

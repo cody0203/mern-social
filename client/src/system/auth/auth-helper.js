@@ -25,8 +25,8 @@ const auth = {
     if (typeof window !== "undefined") {
       console.log("signed out");
       cookies.remove("t", { path: "/" });
-      cb();
     }
+    cb();
   },
 };
 

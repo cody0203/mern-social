@@ -33,12 +33,14 @@ const User = () => {
               {!auth.isAuthenticated() ? (
                 <List.Item>{item.name}</List.Item>
               ) : (
-                <Link to={`/user/profile/${get(item, "_id")}`}>
-                  <Styled.ListItemStyled>
+                <Styled.ListItemStyled>
+                  <Styled.ItemLinkStyled
+                    to={`/user/profile/${get(item, "_id")}`}
+                  >
                     {item.name}
                     <Styled.OpenDetailButtonStyled />
-                  </Styled.ListItemStyled>
-                </Link>
+                  </Styled.ItemLinkStyled>
+                </Styled.ListItemStyled>
               )}
             </>
           )}

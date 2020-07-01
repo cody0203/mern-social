@@ -68,6 +68,21 @@ export const updateUserFailure = createAction(
   (payload) => payload
 );
 
+export const followUserStart = createAction(
+  types.FOLLOW_USER.START,
+  (payload) => payload
+);
+
+export const followUserSuccess = createAction(
+  types.FOLLOW_USER.SUCCESS,
+  (payload) => payload
+);
+
+export const followUserFailure = createAction(
+  types.FOLLOW_USER.FAILURE,
+  (error) => error
+);
+
 export const clearSignUpState = createAction(types.CLEAR_SIGN_UP_STATE);
 
 export const clearUserState = createAction(types.CLEAR_USER_STATE);

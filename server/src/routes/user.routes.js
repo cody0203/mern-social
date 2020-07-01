@@ -11,6 +11,22 @@ router
   .post(userControllers.create);
 
 router
+  .route("/api/user/following")
+  .put(
+    authControllers.requireSignIn,
+    userControllers.addFollowing,
+    userControllers.addFollower
+  );
+
+router
+  .route("/api/user/unfollow")
+  .put(
+    authControllers.requireSignIn,
+    userControllers.removeFollowing,
+    userControllers.removeFollower
+  );
+
+router
   .route("/api/user/:userId")
   .get(authControllers.requireSignIn, userControllers.read)
   .put(

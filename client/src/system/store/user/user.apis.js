@@ -14,3 +14,6 @@ export const updateUser = ({ userId, params }) =>
 
 export const fetchUserAvatar = (id) =>
   request.get(`${endPoints.USER}/avatar/${id}`);
+
+export const followUser = (params) =>
+  request.put(`${endPoints.USER}/following`, params);

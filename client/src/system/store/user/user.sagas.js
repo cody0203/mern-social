@@ -80,10 +80,27 @@ function* updateUser({ payload }) {
   }
 }
 
+function* followUser({ payload }) {
+  try {
+    const response = yield call(apis.followUser, payload);
+    if (response.status === HTTP_STATUS.SUCCESS) {
+      const { data } = response.data;
+
+      yield put(actions.followUserSuccess(data));
+    } else {
+      yield put(actions.followUserFailure(response.status));
+    }
+  } catch (err) {
+    const errorMessage = get(err, "response.data.error", err.message);
+    yield put(actions.followUserFailure(errorMessage));
+  }
+}
+
 export default function* userReducer() {
   yield takeLatest(actions.fetchUserListStart, fetchUserList);
   yield takeLatest(actions.signUpStart, signUp);
   yield takeLatest(actions.fetchUserStart, fetchUser);
   yield takeLatest(actions.removeUserStart, removeUser);
   yield takeLatest(actions.updateUserStart, updateUser);
+  yield takeLatest(actions.followUserStart, followUser);
 }
