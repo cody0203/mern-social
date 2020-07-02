@@ -22,9 +22,6 @@ const CustomMenu = ({ openMenuDrawerHandler, isAuthenticated, userId, signOutHan
         <Styled.MenuItemStyled key='/'>
           <Link to='/'>Home</Link>
         </Styled.MenuItemStyled>
-        <Styled.MenuItemStyled key='/users'>
-          <Link to='/users'>Users</Link>
-        </Styled.MenuItemStyled>
 
         {!isAuthenticated && [
           <Styled.MenuItemStyled key='/sign-up'>

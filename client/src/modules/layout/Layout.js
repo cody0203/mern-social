@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { Drawer, Button } from "antd";
-import { useHistory } from "react-router-dom";
-import get from "lodash/get";
-import CustomMenu from "./components/Menu";
-import { useSelector } from "react-redux";
+import React, { useState, useEffect } from 'react';
+import { Drawer, Button } from 'antd';
+import { useHistory } from 'react-router-dom';
+import get from 'lodash/get';
+import CustomMenu from './components/Menu';
+import { useSelector } from 'react-redux';
 
-import Styled from "./Layout.styles";
-import auth from "../../system/auth/auth-helper";
+import Styled from './Layout.styles';
+import auth from '../../system/auth/auth-helper';
 
 const CustomLayout = ({ children }) => {
   const history = useHistory();
   const [isDrawerMenuOpen, setIsDrawerMenuOpen] = useState(false);
-  const { userInfo } = useSelector((store) => get(store, "authReducer"));
-  const userId = get(userInfo, "_id");
+  const { userInfo } = useSelector((store) => get(store, 'authReducer'));
+  const userId = get(userInfo, '_id');
 
   const openMenuDrawerHandler = () => {
     setIsDrawerMenuOpen(true);
@@ -24,7 +24,7 @@ const CustomLayout = ({ children }) => {
 
   const signOutHandler = () => {
     setIsDrawerMenuOpen(false);
-    auth.clearToken(() => history.push("/"));
+    auth.clearToken(() => history.push('/'));
   };
 
   return (
@@ -36,46 +36,34 @@ const CustomLayout = ({ children }) => {
         signOutHandler={signOutHandler}
       />
       <Styled.ContentStyled>
-        <div className="site-layout-content">{children}</div>
+        <div className='site-layout-content'>{children}</div>
       </Styled.ContentStyled>
 
       <Drawer
-        title="MERN Skeleton"
-        placement="left"
+        title='MERN Skeleton'
+        placement='left'
         closable={false}
         onClose={closeMenuDrawerHandler}
         visible={isDrawerMenuOpen}
       >
-        <Styled.DrawerLinkStyled to="/" onClick={closeMenuDrawerHandler}>
+        <Styled.DrawerLinkStyled to='/' onClick={closeMenuDrawerHandler}>
           Home
-        </Styled.DrawerLinkStyled>
-        <Styled.DrawerLinkStyled to="/users" onClick={closeMenuDrawerHandler}>
-          Users
         </Styled.DrawerLinkStyled>
 
         {!auth.isAuthenticated() && [
-          <Styled.DrawerLinkStyled
-            to="/sign-up"
-            onClick={closeMenuDrawerHandler}
-          >
+          <Styled.DrawerLinkStyled to='/sign-up' onClick={closeMenuDrawerHandler}>
             Sign Up
           </Styled.DrawerLinkStyled>,
-          <Styled.DrawerLinkStyled
-            to="/sign-in"
-            onClick={closeMenuDrawerHandler}
-          >
+          <Styled.DrawerLinkStyled to='/sign-in' onClick={closeMenuDrawerHandler}>
             Sign In
           </Styled.DrawerLinkStyled>,
         ]}
 
         {auth.isAuthenticated() && [
-          <Styled.DrawerLinkStyled
-            to={`/user/profile/${userId}`}
-            onClick={closeMenuDrawerHandler}
-          >
+          <Styled.DrawerLinkStyled to={`/user/profile/${userId}`} onClick={closeMenuDrawerHandler}>
             My Profile
           </Styled.DrawerLinkStyled>,
-          <Button type="primary" onClick={signOutHandler}>
+          <Button type='primary' onClick={signOutHandler}>
             Sign Out
           </Button>,
         ]}

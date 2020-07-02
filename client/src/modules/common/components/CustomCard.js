@@ -11,11 +11,11 @@ const CustomCard = ({ children, width, ...rest }) => {
 };
 
 const CustomCardStyled = styled(Card)`
-  max-width: ${({ width }) => `${width || 500}px`};
+  max-width: ${({ width }) => `${width ? `${width}px` : '100%'}`};
   margin: auto;
 
   .ant-card-body {
-    padding: 16px 50px;
+    padding: 16px 24px;
   }
 `;
 

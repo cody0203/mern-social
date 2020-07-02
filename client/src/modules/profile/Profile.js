@@ -90,7 +90,7 @@ const Profile = () => {
   return (
     <div>
       {userProfileLoading ? null : (
-        <CustomCard width={700} title={<CustomHeader>Profile</CustomHeader>}>
+        <CustomCard width={700} title='Profile'>
           <Styled.TopStyled>
             <Styled.TopContentStyled>
               <CustomAvatar size={70} src={`http://localhost:8080/api/user/avatar/${userId}?${new Date().getTime()}`} />

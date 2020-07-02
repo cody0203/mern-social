@@ -75,7 +75,7 @@ const EditProfile = () => {
   return (
     <div>
       {userProfileLoading ? null : (
-        <CustomCard width={600} title={<CustomHeader>Edit Profile</CustomHeader>}>
+        <CustomCard width={600} title='Edit Profile'>
           <Styled.AvatarContainer>
             <CustomAvatar size={70} src={`http://localhost:8080/api/user/avatar/${userId}?${new Date().getTime()}`} />
 
