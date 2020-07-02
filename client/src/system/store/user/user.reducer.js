@@ -1,4 +1,4 @@
-import * as types from "./user.types";
+import * as types from './user.types';
 
 const INITIAL_STATE = {
   userList: {
@@ -20,6 +20,7 @@ const INITIAL_STATE = {
   },
   removeUserLoading: false,
   followUserLoading: false,
+  unFollowUserLoading: false,
   error: null,
 };
 
@@ -187,6 +188,28 @@ const userReducer = (state = INITIAL_STATE, action) => {
         error: action.payload,
       };
 
+    case types.UN_FOLLOW_USER.START:
+      return {
+        ...state,
+        unFollowUserLoading: true,
+      };
+
+    case types.UN_FOLLOW_USER.SUCCESS:
+      return {
+        ...state,
+        unFollowUserLoading: false,
+        userProfile: {
+          ...state.userProfile,
+          userProfileData: action.payload,
+        },
+      };
+
+    case types.UN_FOLLOW_USER.FAILURE:
+      return {
+        ...state,
+        unFollowUserLoading: false,
+        error: action.payload,
+      };
     case types.CLEAR_USER_STATE:
       return INITIAL_STATE;
 

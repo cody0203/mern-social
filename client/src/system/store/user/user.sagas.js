@@ -1,12 +1,12 @@
-import { put, call, takeLatest } from "redux-saga/effects";
-import get from "lodash/get";
+import { put, call, takeLatest } from 'redux-saga/effects';
+import get from 'lodash/get';
 
-import * as actions from "./user.actions";
-import * as authActions from "../auth/auth.actions";
-import { HTTP_STATUS } from "../../request/request";
-import * as apis from "./user.apis";
+import * as actions from './user.actions';
+import * as authActions from '../auth/auth.actions';
+import { HTTP_STATUS } from '../../request/request';
+import * as apis from './user.apis';
 
-import auth from "../../auth/auth-helper";
+import auth from '../../auth/auth-helper';
 
 function* fetchUserList() {
   try {
@@ -30,7 +30,7 @@ function* signUp({ payload }) {
       yield put(actions.signUpFailure(response.status));
     }
   } catch (err) {
-    const errorMessage = get(err, "response.data.error", err.message);
+    const errorMessage = get(err, 'response.data.error', err.message);
     yield put(actions.signUpFailure(errorMessage));
   }
 }
@@ -43,7 +43,7 @@ function* fetchUser({ payload }) {
 
     yield put(actions.fetchUserSuccess(data));
   } catch (err) {
-    const errorMessage = get(err, "response.data.error", err.message);
+    const errorMessage = get(err, 'response.data.error', err.message);
     yield put(actions.fetchUserFailure(errorMessage));
   }
 }
@@ -60,7 +60,7 @@ function* removeUser({ payload }) {
       yield put(actions.removeUserFailure(response.status));
     }
   } catch (err) {
-    const errorMessage = get(err, "response.data.error", err.message);
+    const errorMessage = get(err, 'response.data.error', err.message);
     yield put(actions.removeUserFailure(errorMessage));
   }
 }
@@ -75,7 +75,7 @@ function* updateUser({ payload }) {
       yield put(actions.updateUserFailure(response.status));
     }
   } catch (err) {
-    const errorMessage = get(err, "response.data.error", err.message);
+    const errorMessage = get(err, 'response.data.error', err.message);
     yield put(actions.updateUserFailure(errorMessage));
   }
 }
@@ -91,7 +91,22 @@ function* followUser({ payload }) {
       yield put(actions.followUserFailure(response.status));
     }
   } catch (err) {
-    const errorMessage = get(err, "response.data.error", err.message);
+    const errorMessage = get(err, 'response.data.error', err.message);
+    yield put(actions.followUserFailure(errorMessage));
+  }
+}
+
+function* unFollowUser({ payload }) {
+  try {
+    const response = yield call(apis.unFollowUser, payload);
+    if (response.status === HTTP_STATUS.SUCCESS) {
+      const { data } = response.data;
+      yield put(actions.unFollowUserSuccess(data));
+    } else {
+      yield put(actions.followUserFailure(response.status));
+    }
+  } catch (err) {
+    const errorMessage = get(err, 'response.data.error', err.message);
     yield put(actions.followUserFailure(errorMessage));
   }
 }
@@ -103,4 +118,5 @@ export default function* userReducer() {
   yield takeLatest(actions.removeUserStart, removeUser);
   yield takeLatest(actions.updateUserStart, updateUser);
   yield takeLatest(actions.followUserStart, followUser);
+  yield takeLatest(actions.unFollowUserStart, unFollowUser);
 }
