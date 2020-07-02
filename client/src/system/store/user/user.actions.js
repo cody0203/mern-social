@@ -41,6 +41,12 @@ export const unFollowUserSuccess = createAction(types.UN_FOLLOW_USER.SUCCESS, (p
 
 export const unFollowUserFailure = createAction(types.UN_FOLLOW_USER.FAILURE, (error) => error);
 
+export const fetchWhoToFollowStart = createAction(types.FETCH_WHO_TO_FOLLOW.START, (payload) => payload);
+
+export const fetchWhoToFollowSuccess = createAction(types.FETCH_WHO_TO_FOLLOW.SUCCESS, (payload) => payload);
+
+export const fetchWhoToFollowFailure = createAction(types.FETCH_WHO_TO_FOLLOW.FAILURE, (error) => error);
+
 export const clearSignUpState = createAction(types.CLEAR_SIGN_UP_STATE);
 
 export const clearUserState = createAction(types.CLEAR_USER_STATE);

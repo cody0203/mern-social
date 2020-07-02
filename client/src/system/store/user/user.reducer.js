@@ -26,7 +26,7 @@ const INITIAL_STATE = {
 
 const userReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case types.FETCH_USER_LIST.START:
+    case types.FETCH_WHO_TO_FOLLOW.START:
       return {
         ...state,
         userList: {
@@ -35,7 +35,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
         },
       };
 
-    case types.FETCH_USER_LIST.SUCCESS:
+    case types.FETCH_WHO_TO_FOLLOW.SUCCESS:
       return {
         ...state,
         userList: {
@@ -44,7 +44,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
         },
       };
 
-    case types.FETCH_USER_LIST.FAILURE:
+    case types.FETCH_WHO_TO_FOLLOW.FAILURE:
       return {
         ...state,
         userList: {

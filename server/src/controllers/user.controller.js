@@ -150,6 +150,19 @@ const removeFollower = async (req, res, next) => {
   }
 };
 
+const whoToFollow = async (req, res, next) => {
+  try {
+    const following = get(req, 'profile.following');
+    const id = get(req, 'profile._id');
+    following.push(id);
+    const users = await User.find({ _id: { $nin: following } }).select('_id name');
+
+    return res.status(200).json({ data: users });
+  } catch (err) {
+    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  }
+};
+
 const userById = async (req, res, next, id) => {
   try {
     const user = await User.findById(id)
@@ -181,4 +194,5 @@ export default {
   addFollower,
   removeFollowing,
   removeFollower,
+  whoToFollow,
 };

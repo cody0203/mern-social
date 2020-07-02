@@ -20,6 +20,19 @@ function* fetchUserList() {
   }
 }
 
+function* fetchWhoToFollow({ payload }) {
+  try {
+    const response = yield call(apis.fetchWhoToFollow, payload);
+
+    const { data } = response.data;
+
+    yield put(actions.fetchWhoToFollowSuccess(data));
+  } catch (err) {
+    const errorMessage = get(err, 'response.data.error', err.message);
+    yield put(actions.fetchWhoToFollowFailure(errorMessage));
+  }
+}
+
 function* signUp({ payload }) {
   try {
     const response = yield call(apis.signUp, payload);
@@ -113,6 +126,7 @@ function* unFollowUser({ payload }) {
 
 export default function* userReducer() {
   yield takeLatest(actions.fetchUserListStart, fetchUserList);
+  yield takeLatest(actions.fetchWhoToFollowStart, fetchWhoToFollow);
   yield takeLatest(actions.signUpStart, signUp);
   yield takeLatest(actions.fetchUserStart, fetchUser);
   yield takeLatest(actions.removeUserStart, removeUser);

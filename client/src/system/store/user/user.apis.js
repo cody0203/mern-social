@@ -3,6 +3,8 @@ import * as endPoints from '../../request/end-point';
 
 export const fetchUserList = () => request.get(endPoints.USERS);
 
+export const fetchWhoToFollow = (id) => request.get(`${endPoints.USERS}/who-to-following/${id}`);
+
 export const signUp = (params) => request.post(endPoints.USERS, params);
 
 export const fetchUser = (id) => request.get(`${endPoints.USER}/${id}`);

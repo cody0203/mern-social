@@ -90,7 +90,7 @@ const Profile = () => {
   return (
     <div>
       {userProfileLoading ? null : (
-        <CustomCard title={<CustomHeader>Profile</CustomHeader>}>
+        <CustomCard width={700} title={<CustomHeader>Profile</CustomHeader>}>
           <Styled.TopStyled>
             <Styled.TopContentStyled>
               <CustomAvatar
