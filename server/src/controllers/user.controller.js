@@ -112,7 +112,7 @@ const addFollower = async (req, res, next) => {
       },
       { new: true }
     )
-      .select('name email updated created bio avatar')
+      .select('name email updated created bio')
       .populate('following', '_id name')
       .populate('followers', '_id name')
       .exec();
@@ -139,7 +139,7 @@ const removeFollower = async (req, res, next) => {
     const { unFollowingId, unFollowerId } = get(req, 'body');
 
     const user = await User.findByIdAndUpdate(unFollowingId, { $pull: { followers: unFollowerId } }, { new: true })
-      .select('name email updated created bio avatar')
+      .select('name email updated created bio')
       .populate('following', '_id name')
       .populate('followers', '_id name')
       .exec();

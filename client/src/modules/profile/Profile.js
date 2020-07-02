@@ -81,7 +81,7 @@ const Profile = () => {
 
   if (isFollowed) {
     followButton = (
-      <Button type='primary' onClick={unFollowUserHandler} loading={unFollowUserLoading}>
+      <Button type='secondary' onClick={unFollowUserHandler} loading={unFollowUserLoading}>
         Unfollow
       </Button>
     );
@@ -93,10 +93,7 @@ const Profile = () => {
         <CustomCard width={700} title={<CustomHeader>Profile</CustomHeader>}>
           <Styled.TopStyled>
             <Styled.TopContentStyled>
-              <CustomAvatar
-                size={70}
-                src={avatar ? `http://localhost:8080/api/user/avatar/${userId}?${new Date().getTime()}` : null}
-              />
+              <CustomAvatar size={70} src={`http://localhost:8080/api/user/avatar/${userId}?${new Date().getTime()}`} />
               <Styled.TextInfoStyled>
                 <Styled.NameStyled>{name}</Styled.NameStyled>
                 <p>{email}</p>

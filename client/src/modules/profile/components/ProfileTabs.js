@@ -59,12 +59,14 @@ const TabContainerStyled = styled(Tabs)`
 
 const TabPanelStyled = styled(TabPane)`
   display: flex;
+  flex-flow: wrap;
 `;
 
 const UserItemStyled = styled(Link)`
   display: flex;
   flex-flow: column;
   align-items: center;
+  margin-right: 20px;
 `;
 
 const UserName = styled.p`

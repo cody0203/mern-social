@@ -1,3 +1,4 @@
+import { get, filter } from 'lodash';
 import * as types from './user.types';
 
 const INITIAL_STATE = {
@@ -172,12 +173,18 @@ const userReducer = (state = INITIAL_STATE, action) => {
       };
 
     case types.FOLLOW_USER.SUCCESS:
+      const followingId = get(action.payload, '_id');
+
       return {
         ...state,
         followUserLoading: false,
         userProfile: {
           ...state.userProfile,
           userProfileData: action.payload,
+        },
+        userList: {
+          ...state.userList,
+          userListData: filter(state.userList.userListData, (user) => get(user, '_id') !== followingId),
         },
       };
 
