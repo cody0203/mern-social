@@ -29,7 +29,7 @@ const User = () => {
 
   return (
     <Styled.MainContainerStyled>
-      <NewFeeds />
+      <NewFeeds userInfo={userInfo} id={id} />
       <WhoToFollow id={id} auth={auth} />
       {/* <Styled.WhoToFollowContainerStyled>
         <CustomHeader>Who to follow</CustomHeader>
