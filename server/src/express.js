@@ -9,6 +9,7 @@ import cors from "cors";
 
 import userRoutes from "./routes/user.routes";
 import authRoutes from "./routes/auth.routes";
+import postRoutes from "./routes/post.routes";
 
 const CURRENT_WORKING_DIR = process.cwd();
 
@@ -25,6 +26,7 @@ app.use(cors());
 
 app.use("/", userRoutes);
 app.use("/", authRoutes);
+app.use("/", postRoutes);
 
 app.use((err, req, res, next) => {
   if (err.name === "UnauthorizedError") {
