@@ -64,7 +64,7 @@ const WhoToFollow = ({ id, auth }) => {
 };
 
 const WhoToFollowContainerStyled = styled.div`
-  flex: 0.5;
+  flex: 0.7;
 `;
 
 const ListStyled = styled(List)`
