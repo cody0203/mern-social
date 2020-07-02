@@ -5,13 +5,15 @@ import errorHandler from "../helpers/dbErrorHandler";
 
 const getPosts = async (req, res, next) => {
   try {
-    console.log(get(req, "auth"));
     const userId = get(req, "auth._id");
     const user = await User.findById(userId);
     const following = get(user, "following");
     following.push(userId);
 
-    const posts = await Post.find({ _id: { $nin: following } });
+    const posts = await Post.find({ _id: { $nin: following } }).populate(
+      "owner",
+      "name"
+    );
 
     return res.status(200).json({ data: posts });
   } catch (err) {
