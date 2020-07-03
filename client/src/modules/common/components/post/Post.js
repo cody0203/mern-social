@@ -3,20 +3,58 @@ import styled from 'styled-components';
 import get from 'lodash/get';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { HeartFilled, MessageFilled } from '@ant-design/icons';
+import { Tooltip } from 'antd';
+import { HeartFilled, MessageFilled, GlobalOutlined, LockOutlined } from '@ant-design/icons';
+import { useDispatch, useSelector } from 'react-redux';
 
 import CustomAvatar from '../CustomAvatar';
+import PrivacySelect from './PrivacySelect';
+
+import * as actions from '../../../../system/store/post/post.actions';
 
 const Post = ({ post }) => {
-  const postId = get(post, '_id');
+  const dispatch = useDispatch();
+  const { userInfo } = useSelector((store) => get(store, 'authReducer'));
 
+  const id = get(userInfo, '_id');
+  const name = get(userInfo, 'name');
+
+  const postId = get(post, '_id');
   const content = get(post, 'content');
   const created = get(post, 'created');
   const likes = get(post, 'likes');
+  const isPublic = get(post, 'public');
   const comments = get(post, 'comments');
   const owner = get(post, 'owner');
   const ownerName = get(owner, 'name');
   const ownerId = get(owner, '_id');
+
+  let postStatus = (
+    <Tooltip title='Public'>
+      <GlobalOutlined />
+    </Tooltip>
+  );
+
+  if (!isPublic) {
+    postStatus = (
+      <Tooltip title='Only me'>
+        <LockOutlined />
+      </Tooltip>
+    );
+  }
+
+  const changePrivacyPostHandler = (value) => {
+    let isPublic;
+    if (value === 'public') {
+      isPublic = true;
+    }
+
+    if (value === 'private') {
+      isPublic = false;
+    }
+
+    dispatch(actions.updatePostStart({ id: postId, params: { public: isPublic } }));
+  };
 
   return (
     <PostStyled>
@@ -26,7 +64,18 @@ const Post = ({ post }) => {
         </Link>
         <TopContentStyled>
           <OwnerNameStyled to={`/user/profile/${ownerId}`}>{ownerName}</OwnerNameStyled>
-          <p>{moment(created).fromNow()}</p>
+          <MetaContainerStyled>
+            <TimeStyled>{moment(created).fromNow()}</TimeStyled>
+            {id === ownerId ? (
+              <PrivacySelect
+                shorten={true}
+                isPublic={isPublic ? 'public' : 'private'}
+                changePrivacyPostHandler={changePrivacyPostHandler}
+              />
+            ) : (
+              <>{postStatus}</>
+            )}
+          </MetaContainerStyled>
         </TopContentStyled>
       </TopContainerStyled>
       <ContentStyled>{content}</ContentStyled>
@@ -63,6 +112,28 @@ const TopContentStyled = styled.div`
 
 const OwnerNameStyled = styled(Link)`
   color: ${({ theme }) => get(theme, 'colors.primary')};
+`;
+
+const MetaContainerStyled = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const TimeStyled = styled.span`
+  position: relative;
+  padding-right: 10px;
+  margin-right: 5px;
+
+  &::after {
+    position: absolute;
+    top: calc(50% - 2px);
+    right: 0;
+    content: '';
+    width: 4px;
+    height: 4px;
+    background-color: rgba(0, 0, 0, 0.35);
+    border-radius: 50%;
+  }
 `;
 
 const ContentStyled = styled.div`

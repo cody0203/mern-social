@@ -1,4 +1,5 @@
 import * as types from './post.types';
+import * as utils from './post.utils';
 
 const INITIAL_STATE = {
   postList: {
@@ -6,6 +7,7 @@ const INITIAL_STATE = {
     postListLoading: true,
   },
   createPostLoading: false,
+  updatePostLoading: false,
   error: null,
 };
 
@@ -62,6 +64,29 @@ const postReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         createPostLoading: false,
+        error: action.payload,
+      };
+
+    case types.UPDATE_POST.START:
+      return {
+        ...state,
+        updatePostLoading: true,
+      };
+
+    case types.UPDATE_POST.SUCCESS:
+      return {
+        ...state,
+        postList: {
+          ...state.postList,
+          postListData: utils.updatePostList(state.postList.postListData, action.payload),
+        },
+        updatePostLoading: false,
+      };
+
+    case types.UPDATE_POST.FAILURE:
+      return {
+        ...state,
+        updatePostLoading: false,
         error: action.payload,
       };
 

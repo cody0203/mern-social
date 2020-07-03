@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, extend } from 'lodash';
 import Post from '../models/post.model';
 import User from '../models/user.model';
 import errorHandler from '../helpers/dbErrorHandler';
@@ -35,4 +35,42 @@ const createPost = async (req, res, next) => {
   }
 };
 
-export default { createPost, getPosts };
+const updatePost = async (req, res, next) => {
+  try {
+    let post = req.post;
+    post = extend(post, req.body);
+    console.log(post);
+    await post.save();
+
+    return res.status(200).json({ message: 'Update post successfully', data: post });
+  } catch (err) {
+    return res.status(404).json({ error: errorHandler.getErrorMessage(err) });
+  }
+};
+
+const isOwner = (req, res, next) => {
+  const owner = req.post && req.auth && req.post.owner._id.toString() === req.auth._id.toString();
+
+  if (!owner) {
+    return res.status(403).json({ error: 'User is not authorized' });
+  }
+
+  next();
+};
+
+const postById = async (req, res, next, id) => {
+  try {
+    const post = await Post.findById(id).populate('owner', 'name').exec();
+
+    if (!post) {
+      return res.status(400).json({ error: 'Post not found' });
+    }
+
+    req.post = post;
+    next();
+  } catch (err) {
+    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  }
+};
+
+export default { createPost, getPosts, updatePost, postById, isOwner };

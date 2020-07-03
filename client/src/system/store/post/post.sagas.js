@@ -34,7 +34,24 @@ function* createPost({ payload }) {
   }
 }
 
+function* updatePost({ payload }) {
+  try {
+    const response = yield call(apis.updatePost, payload);
+
+    if (response.status === HTTP_STATUS.SUCCESS) {
+      const { data } = response.data;
+      yield put(actions.updatePostSuccess(data));
+    } else {
+      yield put(actions.updatePostFailure(response.status));
+    }
+  } catch (err) {
+    const errorMessage = get(err, 'response.data.error', err.message);
+    yield put(actions.updatePostFailure(errorMessage));
+  }
+}
+
 export default function* postSagas() {
   yield takeLatest(actions.fetchPostListStart, fetchPostList);
   yield takeLatest(actions.createPostStart, createPost);
+  yield takeLatest(actions.updatePostStart, updatePost);
 }

@@ -4,8 +4,10 @@ import { get, isEmpty } from 'lodash';
 import { Input, Button, Select } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { GlobalOutlined } from '@ant-design/icons';
+
 import CustomAvatar from '../CustomAvatar';
 import CustomCard from '../CustomCard';
+import PrivacySelect from './PrivacySelect';
 
 import * as constants from './constants';
 
@@ -18,8 +20,8 @@ const PostForm = () => {
   const dispatch = useDispatch();
   const [value, setValue] = useState('');
   const [isPublicPost, setIsPublicPost] = useState('public');
-  const { userInfo } = useSelector((store) => get(store, 'authReducer'));
   const { createPostLoading } = useSelector((store) => get(store, 'postReducer'));
+  const { userInfo } = useSelector((store) => get(store, 'authReducer'));
   const id = get(userInfo, '_id');
   const name = get(userInfo, 'name');
 
@@ -54,24 +56,17 @@ const PostForm = () => {
           <span className='user-name'>{name}</span>
         </UserInfoContainer>
         <TextArea placeholder="What's on your mind?" rows={5} value={value} onChange={onChangeCommentHandler} />
-        <Select onChange={changePrivacyPostHandler} value={isPublicPost}>
-          {constants.privacyOptions.map((option) => (
-            <Option value={option.value} key={option.value}>
-              <div>
-                {option.icon}
-                <PrivacyOptionValue>{option.text}</PrivacyOptionValue>
-              </div>
-            </Option>
-          ))}
-        </Select>
-        <PostButtonStyled
-          type='primary'
-          disabled={isEmpty(value)}
-          onClick={createPostHandler}
-          loading={createPostLoading}
-        >
-          Post
-        </PostButtonStyled>
+        <ActionContainerStyled>
+          <PrivacySelect changePrivacyPostHandler={changePrivacyPostHandler} isPublic={isPublicPost} shorten={false} />
+          <PostButtonStyled
+            type='primary'
+            disabled={isEmpty(value)}
+            onClick={createPostHandler}
+            loading={createPostLoading}
+          >
+            Post
+          </PostButtonStyled>
+        </ActionContainerStyled>
       </StatusFormStyled>
     </CustomCard>
   );
@@ -95,12 +90,14 @@ const StatusFormStyled = styled.div`
   border-radius: 2px;
 `;
 
-const PostButtonStyled = styled(Button)`
-  margin: 24px 0 0 16px;
+const ActionContainerStyled = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 24px;
 `;
 
-const PrivacyOptionValue = styled.span`
-  margin-left: 10px;
+const PostButtonStyled = styled(Button)`
+  margin-left: 16px;
 `;
 
 export default PostForm;

@@ -1,20 +1,17 @@
-import express from "express";
-import authControllers from "../controllers/auth.controller";
-import postControllers from "../controllers/post.controllers";
+import express from 'express';
+import authControllers from '../controllers/auth.controller';
+import postControllers from '../controllers/post.controllers';
 
 const router = express.Router();
 
-router
-  .route("/api/posts")
-  .get(authControllers.requireSignIn, postControllers.getPosts);
+router.route('/api/posts').get(authControllers.requireSignIn, postControllers.getPosts);
+
+router.route('/api/post/').post(authControllers.requireSignIn, postControllers.createPost);
 
 router
-  .route("/api/post/")
-  .post(authControllers.requireSignIn, postControllers.createPost);
-
-// router
-//   .route('/api/post/:postId')
-//   .delete(authControllers.requireSignIn, authControllers.hasAuthorization, postControllers.deletePost);
+  .route('/api/post/:postId')
+  .put(authControllers.requireSignIn, postControllers.isOwner, postControllers.updatePost);
+// .delete(authControllers.requireSignIn, authControllers.hasAuthorization, postControllers.deletePost);
 
 // router
 //   .route('/api/post/comment/:postId')
@@ -28,5 +25,7 @@ router
 // router.route('/api/post/:userId').get(authControllers.requireSignIn, postControllers.getPost);
 
 // router.param('userId', userControllers.userById);
+
+router.param('postId', postControllers.postById);
 
 export default router;
