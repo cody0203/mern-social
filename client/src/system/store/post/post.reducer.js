@@ -1,4 +1,4 @@
-import * as types from "./post.types";
+import * as types from './post.types';
 
 const INITIAL_STATE = {
   postList: {
@@ -45,13 +45,20 @@ const postReducer = (state = INITIAL_STATE, action) => {
         createPostLoading: true,
       };
 
-    case types.FETCH_POST_LIST.SUCCESS:
+    case types.CREATE_POST.SUCCESS:
+      const afterCreatedPostList = [...state.postList.postListData];
+      afterCreatedPostList.unshift(action.payload);
+
       return {
         ...state,
         createPostLoading: false,
+        postList: {
+          ...state.postList,
+          postListData: afterCreatedPostList,
+        },
       };
 
-    case types.FETCH_POST_LIST.FAILURE:
+    case types.CREATE_POST.FAILURE:
       return {
         ...state,
         createPostLoading: false,
