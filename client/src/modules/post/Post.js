@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import get from "lodash/get";
+import { get, includes } from "lodash";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import { Tooltip } from "antd";
 import {
   HeartFilled,
+  HeartOutlined,
   MessageFilled,
   GlobalOutlined,
   LockOutlined,
@@ -84,6 +85,16 @@ const Post = ({ post }) => {
     setIsEditPostModalVisible(false);
   };
 
+  const likePostHandler = () => {
+    dispatch(actions.likePostStart(postId));
+  };
+
+  let likeIcon = <LikeIconStyled onClick={likePostHandler} />;
+
+  if (includes(likes, id)) {
+    likeIcon = <LikedIconStyled onClick={likePostHandler} />;
+  }
+
   return (
     <PostStyled>
       <TopContainerStyled>
@@ -115,7 +126,7 @@ const Post = ({ post }) => {
       <ContentStyled>{content}</ContentStyled>
       <ActionContainerStyled>
         <ActionIconContainer>
-          <LikeIconStyled />
+          {likeIcon}
           <span>{get(likes, "length")}</span>
         </ActionIconContainer>
         <ActionIconContainer>
@@ -196,7 +207,13 @@ const ActionIconContainer = styled.div`
   cursor: pointer;
 `;
 
-const LikeIconStyled = styled(HeartFilled)`
+const LikedIconStyled = styled(HeartFilled)`
+  font-size: 20px;
+  color: ${({ theme }) => get(theme, "colors.primary")};
+  margin-right: 6px;
+`;
+
+const LikeIconStyled = styled(HeartOutlined)`
   font-size: 20px;
   color: ${({ theme }) => get(theme, "colors.primary")};
   margin-right: 6px;

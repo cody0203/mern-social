@@ -93,6 +93,25 @@ const postReducer = (state = INITIAL_STATE, action) => {
         error: action.payload,
       };
 
+    case types.LIKE_POST.SUCCESS: {
+      return {
+        ...state,
+        postList: {
+          ...state.postList,
+          postListData: utils.updatePostList(
+            state.postList.postListData,
+            action.payload
+          ),
+        },
+      };
+    }
+
+    case types.LIKE_POST.FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
     default:
       return state;
   }
