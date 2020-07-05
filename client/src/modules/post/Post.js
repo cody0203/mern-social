@@ -110,8 +110,7 @@ const Post = ({ post }) => {
             )}
           </MetaContainerStyled>
         </TopContentStyled>
-
-        <MoreIconStyled onClick={openEditPostModal} />
+        {id === ownerId && <MoreIconStyled onClick={openEditPostModal} />}
       </TopContainerStyled>
       <ContentStyled>{content}</ContentStyled>
       <ActionContainerStyled>
@@ -184,6 +183,7 @@ const TimeStyled = styled.span`
 const ContentStyled = styled.div`
   background-color: white;
   padding: 24px;
+  color: black;
 `;
 
 const ActionContainerStyled = styled.div`

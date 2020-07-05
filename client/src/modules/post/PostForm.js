@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { get, isEmpty } from "lodash";
-import { Input, Button, Select } from "antd";
+import { Input, Button, Select, Popover, Upload } from "antd";
 import { useSelector, useDispatch } from "react-redux";
+import { CameraFilled, SmileFilled } from "@ant-design/icons";
+import "emoji-mart/css/emoji-mart.css";
+import { Picker } from "emoji-mart";
 
 import CustomAvatar from "../common/components/CustomAvatar";
 import PrivacySelect from "./PrivacySelect";
@@ -22,6 +25,7 @@ const PostForm = ({
   const dispatch = useDispatch();
   const [value, setValue] = useState("");
   const [isSubmit, setIsSubmit] = useState(false);
+  const [tempUploadAvatar, setTempUploadAvatar] = useState(null);
   const [isPublicPost, setIsPublicPost] = useState(publicStatus);
   const { userInfo } = useSelector((store) => get(store, "authReducer"));
   const id = get(userInfo, "_id");
@@ -52,6 +56,12 @@ const PostForm = ({
     setIsPublicPost(value);
   };
 
+  const selectEmojiHandler = (emoji) => {
+    console.log(emoji);
+    const newValue = `${value}${get(emoji, "native")}`;
+    setValue(newValue);
+  };
+
   const createPostHandler = () => {
     if (isEmpty(value)) return;
     const isPublic = isPublicPost === "public" ? true : false;
@@ -61,21 +71,60 @@ const PostForm = ({
     setIsSubmit(true);
   };
 
+  const uploadProps = {
+    onRemove: (file) => {
+      setTempUploadAvatar([]);
+    },
+    beforeUpload: (file) => {
+      setTempUploadAvatar([file]);
+      return false;
+    },
+    tempUploadAvatar,
+  };
+
   return (
-    <StatusFormStyled>
-      <UserInfoContainer>
-        <CustomAvatar
-          size={50}
-          src={`http://localhost:8080/api/user/avatar/${id}?${new Date().getTime()}`}
+    <>
+      <StatusFormStyled>
+        <UserInfoContainer>
+          <CustomAvatar
+            size={50}
+            src={`http://localhost:8080/api/user/avatar/${id}?${new Date().getTime()}`}
+          />
+          <span className="user-name">{name}</span>
+        </UserInfoContainer>{" "}
+      </StatusFormStyled>
+
+      <TextAreaContainerStyled>
+        <TextAreaStyled
+          placeholder="What's on your mind?"
+          rows={5}
+          value={value}
+          onChange={onChangeCommentHandler}
         />
-        <span className="user-name">{name}</span>
-      </UserInfoContainer>
-      <TextArea
-        placeholder="What's on your mind?"
-        rows={5}
-        value={value}
-        onChange={onChangeCommentHandler}
-      />
+
+        <ExtraContentContainerStyled>
+          {/* <Upload
+            {...uploadProps}
+            fileList={tempUploadAvatar}
+            className="upload-container"
+          >
+            <CameraFilled />
+          </Upload> */}
+          <Popover
+            content={
+              <Picker
+                set="apple"
+                showPreview={false}
+                showSkinTones={false}
+                onSelect={selectEmojiHandler}
+              />
+            }
+            trigger="click"
+          >
+            <EmojiPickerIcon />
+          </Popover>
+        </ExtraContentContainerStyled>
+      </TextAreaContainerStyled>
       <ActionContainerStyled>
         <PrivacySelect
           changePrivacyPostHandler={changePrivacyPostHandler}
@@ -91,14 +140,13 @@ const PostForm = ({
           {submitButtonTitle}
         </PostButtonStyled>
       </ActionContainerStyled>
-    </StatusFormStyled>
+    </>
   );
 };
 
 const UserInfoContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 24px;
 
   .user-name {
     font-size: 16px;
@@ -108,14 +156,46 @@ const UserInfoContainer = styled.div`
 `;
 
 const StatusFormStyled = styled.div`
-  padding: 24px;
+  padding: 16px 24px;
   border-radius: 2px;
+`;
+
+const TextAreaContainerStyled = styled.div`
+  background-color: white;
+  padding-bottom: 16px;
+`;
+
+const TextAreaStyled = styled(TextArea)`
+  border: none;
+  resize: none;
+  border-radius: 0px;
+  color: black;
+
+  &.ant-input:focus,
+  &.ant-input-focused,
+  &.ant-input:hover {
+    border-color: none;
+    outline: none;
+    box-shadow: none;
+  }
+`;
+
+const ExtraContentContainerStyled = styled.div`
+  // display: flex;
+  // justify-content: space-between;
+  text-align: right;
+  margin: 0 16px;
+`;
+
+const EmojiPickerIcon = styled(SmileFilled)`
+  font-size: 20px;
+  color: ${({ theme }) => get(theme, "colors.primary")};
 `;
 
 const ActionContainerStyled = styled.div`
   display: flex;
   align-items: center;
-  margin-top: 24px;
+  margin: 16px 24px;
 `;
 
 const PostButtonStyled = styled(Button)`
