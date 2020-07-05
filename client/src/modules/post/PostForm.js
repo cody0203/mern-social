@@ -58,7 +58,7 @@ const PostForm = ({
 
   const selectEmojiHandler = (emoji) => {
     console.log(emoji);
-    const newValue = `${value}${get(emoji, "native")}`;
+    const newValue = `${value}${get(emoji, "native")} `;
     setValue(newValue);
   };
 
