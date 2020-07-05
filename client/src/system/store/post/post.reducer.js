@@ -1,5 +1,5 @@
-import * as types from './post.types';
-import * as utils from './post.utils';
+import * as types from "./post.types";
+import * as utils from "./post.utils";
 
 const INITIAL_STATE = {
   postList: {
@@ -78,7 +78,10 @@ const postReducer = (state = INITIAL_STATE, action) => {
         ...state,
         postList: {
           ...state.postList,
-          postListData: utils.updatePostList(state.postList.postListData, action.payload),
+          postListData: utils.updatePostList(
+            state.postList.postListData,
+            action.payload
+          ),
         },
         updatePostLoading: false,
       };
