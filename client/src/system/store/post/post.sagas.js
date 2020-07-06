@@ -63,9 +63,27 @@ function* likePost({ payload }) {
   }
 }
 
+function* createComment({ payload }) {
+  try {
+    const response = yield call(apis.createComment, payload);
+
+    if (response.status === HTTP_STATUS.SUCCESS) {
+      const { data } = response.data;
+
+      yield put(actions.createCommentSuccess(data));
+    } else {
+      yield put(actions.createCommentFailure(response.status));
+    }
+  } catch (err) {
+    const errorMessage = get(err, "response.data.error", err.message);
+    yield put(actions.createCommentFailure(errorMessage));
+  }
+}
+
 export default function* postSagas() {
   yield takeLatest(actions.fetchPostListStart, fetchPostList);
   yield takeLatest(actions.createPostStart, createPost);
   yield takeLatest(actions.updatePostStart, updatePost);
   yield takeLatest(actions.likePostStart, likePost);
+  yield takeLatest(actions.createCommentStart, createComment);
 }

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { get, includes } from "lodash";
 import moment from "moment";
 import { Link } from "react-router-dom";
-import { Tooltip } from "antd";
+import { Tooltip, Input } from "antd";
 import {
   HeartFilled,
   HeartOutlined,
@@ -18,14 +18,16 @@ import { useDispatch, useSelector } from "react-redux";
 import CustomAvatar from "../common/components/CustomAvatar";
 import PrivacySelect from "./PrivacySelect";
 import EditPostModal from "./EditPostModal";
+import CommentContainer from "./CommentContainer";
 
 import * as actions from "../../system/store/post/post.actions";
 
 const Post = ({ post }) => {
   const dispatch = useDispatch();
   const [isEditPostModalVisible, setIsEditPostModalVisible] = useState(false);
+  const [commentValue, setCommentValue] = useState("");
   const { userInfo } = useSelector((store) => get(store, "authReducer"));
-  const { updatePostLoading } = useSelector((store) =>
+  const { updatePostLoading, createCommentLoading } = useSelector((store) =>
     get(store, "postReducer")
   );
 
@@ -55,6 +57,12 @@ const Post = ({ post }) => {
       </Tooltip>
     );
   }
+
+  useEffect(() => {
+    if (!createCommentLoading) {
+      setCommentValue("");
+    }
+  }, [createCommentLoading]);
 
   useEffect(() => {
     if (!updatePostLoading) {
@@ -95,46 +103,79 @@ const Post = ({ post }) => {
     likeIcon = <LikedIconStyled onClick={likePostHandler} />;
   }
 
+  const commentHandler = (e) => {
+    dispatch(
+      actions.createCommentStart({
+        id: postId,
+        params: { content: commentValue, poster: id },
+      })
+    );
+  };
+
+  const onChangeCommentHandler = (e) => {
+    const value = get(e, "target.value");
+    setCommentValue(value);
+  };
+
   return (
     <PostStyled>
-      <TopContainerStyled>
-        <Link to={`/user/profile/${ownerId}`}>
+      <PostContentStyled>
+        <TopContainerStyled>
+          <Link to={`/user/profile/${ownerId}`}>
+            <CustomAvatar
+              size={50}
+              src={`http://localhost:8080/api/user/avatar/${ownerId}?${new Date().getTime()}`}
+            />
+          </Link>
+          <TopContentStyled>
+            <OwnerNameStyled to={`/user/profile/${ownerId}`}>
+              {ownerName}
+            </OwnerNameStyled>
+            <MetaContainerStyled>
+              <TimeStyled>{moment(created).fromNow()}</TimeStyled>
+              {id === ownerId ? (
+                <PrivacySelect
+                  shorten={true}
+                  isPublic={isPublic ? "public" : "private"}
+                  changePrivacyPostHandler={changePrivacyPostHandler}
+                />
+              ) : (
+                <>{postStatus}</>
+              )}
+            </MetaContainerStyled>
+          </TopContentStyled>
+          {id === ownerId && <MoreIconStyled onClick={openEditPostModal} />}
+        </TopContainerStyled>
+        <ContentStyled>{content}</ContentStyled>
+        <ActionContainerStyled>
+          <ActionIconContainer>
+            {likeIcon}
+            <span>{get(likes, "length")}</span>
+          </ActionIconContainer>
+          <ActionIconContainer>
+            <CommentIconStyled />
+            <span>{get(comments, "length")}</span>
+          </ActionIconContainer>
+        </ActionContainerStyled>
+      </PostContentStyled>
+
+      <CommentContainerStyle>
+        <CommentInputContainer>
           <CustomAvatar
-            size={50}
+            size={30}
             src={`http://localhost:8080/api/user/avatar/${ownerId}?${new Date().getTime()}`}
           />
-        </Link>
-        <TopContentStyled>
-          <OwnerNameStyled to={`/user/profile/${ownerId}`}>
-            {ownerName}
-          </OwnerNameStyled>
-          <MetaContainerStyled>
-            <TimeStyled>{moment(created).fromNow()}</TimeStyled>
-            {id === ownerId ? (
-              <PrivacySelect
-                shorten={true}
-                isPublic={isPublic ? "public" : "private"}
-                changePrivacyPostHandler={changePrivacyPostHandler}
-              />
-            ) : (
-              <>{postStatus}</>
-            )}
-          </MetaContainerStyled>
-        </TopContentStyled>
-        {id === ownerId && <MoreIconStyled onClick={openEditPostModal} />}
-      </TopContainerStyled>
-      <ContentStyled>{content}</ContentStyled>
-      <ActionContainerStyled>
-        <ActionIconContainer>
-          {likeIcon}
-          <span>{get(likes, "length")}</span>
-        </ActionIconContainer>
-        <ActionIconContainer>
-          <CommentIconStyled />
-          <span>{get(comments, "length")}</span>
-        </ActionIconContainer>
-      </ActionContainerStyled>
 
+          <CommentInput
+            placeholder="Write a comment..."
+            value={commentValue}
+            onPressEnter={commentHandler}
+            onChange={onChangeCommentHandler}
+          />
+        </CommentInputContainer>
+
+        <CommentContainer comments={comments} />
+      </CommentContainerStyle>
       <EditPostModal
         onCancel={closeEditPostModal}
         visible={isEditPostModalVisible}
@@ -148,10 +189,13 @@ const Post = ({ post }) => {
 };
 
 const PostStyled = styled.div`
-  background-color: ${({ theme }) => get(theme, "colors.background")};
   border-radius: 2px;
-  border: 1px solid ${({ theme }) => get(theme, "colors.lineColor")};
   margin-bottom: 24px;
+  border: 1px solid ${({ theme }) => get(theme, "colors.lineColor")};
+`;
+
+const PostContentStyled = styled.div`
+  background-color: ${({ theme }) => get(theme, "colors.background")};
 `;
 
 const TopContainerStyled = styled.div`
@@ -231,6 +275,19 @@ const MoreIconStyled = styled(EllipsisOutlined)`
   right: 10px;
   font-size: 24px;
   cursor: pointer;
+`;
+
+const CommentContainerStyle = styled.div`
+  padding: 24px;
+`;
+
+const CommentInputContainer = styled.div`
+  display: flex;
+`;
+
+const CommentInput = styled(Input)`
+  margin-left: 16px;
+  border-radius: 50px;
 `;
 
 export default Post;

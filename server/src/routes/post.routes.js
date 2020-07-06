@@ -21,10 +21,10 @@ router
   );
 // .delete(authControllers.requireSignIn, authControllers.hasAuthorization, postControllers.deletePost);
 
-// router
-//   .route('/api/post/comment/:postId')
-//   .put(authControllers.requireSignIn, postControllers.createComment)
-//   .delete(authControllers.requireSignIn, authControllers.hasAuthorization, postControllers.deleteComment);
+router
+  .route("/api/post/comment/:postId")
+  .put(authControllers.requireSignIn, postControllers.createComment);
+// .delete(authControllers.requireSignIn, authControllers.hasAuthorization, postControllers.deleteComment);
 
 router
   .route("/api/post/like/:postId")

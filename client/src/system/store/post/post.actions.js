@@ -57,3 +57,18 @@ export const likePostFailure = createAction(
   types.LIKE_POST.FAILURE,
   (error) => error
 );
+
+export const createCommentStart = createAction(
+  types.CREATE_COMMENT.START,
+  (payload) => payload
+);
+
+export const createCommentSuccess = createAction(
+  types.CREATE_COMMENT.SUCCESS,
+  (payload) => payload
+);
+
+export const createCommentFailure = createAction(
+  types.CREATE_COMMENT.FAILURE,
+  (error) => error
+);

@@ -8,6 +8,7 @@ const INITIAL_STATE = {
   },
   createPostLoading: false,
   updatePostLoading: false,
+  createCommentLoading: false,
   error: null,
 };
 
@@ -93,7 +94,7 @@ const postReducer = (state = INITIAL_STATE, action) => {
         error: action.payload,
       };
 
-    case types.LIKE_POST.SUCCESS: {
+    case types.LIKE_POST.SUCCESS:
       return {
         ...state,
         postList: {
@@ -104,11 +105,36 @@ const postReducer = (state = INITIAL_STATE, action) => {
           ),
         },
       };
-    }
 
     case types.LIKE_POST.FAILURE:
       return {
         ...state,
+        error: action.payload,
+      };
+
+    case types.CREATE_COMMENT.START:
+      return {
+        ...state,
+        createCommentLoading: true,
+      };
+
+    case types.CREATE_COMMENT.SUCCESS:
+      return {
+        ...state,
+        createCommentLoading: false,
+        postList: {
+          ...state.postList,
+          postListData: utils.updatePostList(
+            state.postList.postListData,
+            action.payload
+          ),
+        },
+      };
+
+    case types.CREATE_COMMENT.FAILURE:
+      return {
+        ...state,
+        createCommentLoading: false,
         error: action.payload,
       };
 

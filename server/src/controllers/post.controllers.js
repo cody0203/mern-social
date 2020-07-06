@@ -16,6 +16,7 @@ const getPosts = async (req, res, next) => {
     })
       .sort({ created: "desc" })
       .populate("owner", "name")
+      .populate("comments.poster", "name")
       .exec();
 
     return res.status(200).json({ data: posts });
@@ -82,6 +83,21 @@ const likePost = async (req, res, next) => {
   }
 };
 
+const createComment = async (req, res, next) => {
+  try {
+    const post = get(req, "post");
+    post.comments.push(req.body);
+    console.log(req.body);
+    await post.save();
+    await post.populate("poster", "name").execPopulate();
+
+    return res.status(200).json({ data: post });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  }
+};
+
 const isOwner = (req, res, next) => {
   const owner =
     req.post &&
@@ -117,4 +133,5 @@ export default {
   postById,
   isOwner,
   likePost,
+  createComment,
 };

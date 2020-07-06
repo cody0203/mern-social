@@ -1,5 +1,7 @@
 import React from "react";
+import { get } from "lodash";
 import { Form } from "antd";
+import styled from "styled-components";
 
 import CustomFormModal from "../common/components/CustomFormModal";
 import PostForm from "./PostForm";
@@ -15,7 +17,7 @@ const EditPostModal = ({
   loading,
 }) => {
   return (
-    <CustomFormModal title="Edit post" visible={visible} onCancel={onCancel}>
+    <ModalStyled title="Edit post" visible={visible} onCancel={onCancel}>
       <Form>
         <PostForm
           submitButtonTitle="Save"
@@ -28,8 +30,14 @@ const EditPostModal = ({
           loading={loading}
         />
       </Form>
-    </CustomFormModal>
+    </ModalStyled>
   );
 };
+
+const ModalStyled = styled(CustomFormModal)`
+  .ant-modal-body {
+    background-color: ${({ theme }) => get(theme, "colors.background")};
+  }
+`;
 
 export default EditPostModal;

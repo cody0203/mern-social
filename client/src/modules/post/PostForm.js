@@ -97,9 +97,9 @@ const PostForm = ({
       <TextAreaContainerStyled>
         <TextAreaStyled
           placeholder="What's on your mind?"
-          rows={5}
           value={value}
           onChange={onChangeCommentHandler}
+          autoSize={{ minRows: 3 }}
         />
 
         <ExtraContentContainerStyled>
@@ -170,6 +170,7 @@ const TextAreaStyled = styled(TextArea)`
   resize: none;
   border-radius: 0px;
   color: black;
+  padding-left: 24px;
 
   &.ant-input:focus,
   &.ant-input-focused,
@@ -195,7 +196,8 @@ const EmojiPickerIcon = styled(SmileFilled)`
 const ActionContainerStyled = styled.div`
   display: flex;
   align-items: center;
-  margin: 16px 24px;
+  padding: 16px 24px;
+  background-color: ${({ theme }) => get(theme, "colors.background")};
 `;
 
 const PostButtonStyled = styled(Button)`

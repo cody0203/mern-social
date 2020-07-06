@@ -9,3 +9,6 @@ export const updatePost = ({ id, params }) =>
   request.put(`${endPoints.POST}/${id}`, params);
 
 export const likePost = (id) => request.put(`${endPoints.POST}/like/${id}`);
+
+export const createComment = ({ id, params }) =>
+  request.put(`${endPoints.POST}/comment/${id}`, params);
