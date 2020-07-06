@@ -15,8 +15,6 @@ const CommentContainer = ({ comments }) => {
   );
 };
 
-const CommentContainerStyled = styled.div`
-  margin-top: 24px;
-`;
+const CommentContainerStyled = styled.div``;
 
 export default CommentContainer;

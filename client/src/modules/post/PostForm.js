@@ -58,7 +58,7 @@ const PostForm = ({
 
   const selectEmojiHandler = (emoji) => {
     console.log(emoji);
-    const newValue = `${value}${get(emoji, "native")} `;
+    const newValue = `${value}${get(emoji, "native")}`;
     setValue(newValue);
   };
 
@@ -156,7 +156,7 @@ const UserInfoContainer = styled.div`
 `;
 
 const StatusFormStyled = styled.div`
-  padding: 16px 24px;
+  padding: 16px;
   border-radius: 2px;
 `;
 
@@ -170,7 +170,7 @@ const TextAreaStyled = styled(TextArea)`
   resize: none;
   border-radius: 0px;
   color: black;
-  padding-left: 24px;
+  padding-left: 16px;
 
   &.ant-input:focus,
   &.ant-input-focused,
@@ -196,7 +196,7 @@ const EmojiPickerIcon = styled(SmileFilled)`
 const ActionContainerStyled = styled.div`
   display: flex;
   align-items: center;
-  padding: 16px 24px;
+  padding: 16px;
   background-color: ${({ theme }) => get(theme, "colors.background")};
 `;
 

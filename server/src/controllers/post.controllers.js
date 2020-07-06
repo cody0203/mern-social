@@ -89,7 +89,7 @@ const createComment = async (req, res, next) => {
     post.comments.push(req.body);
     console.log(req.body);
     await post.save();
-    await post.populate("poster", "name").execPopulate();
+    await post.populate("comments.poster", "name").execPopulate();
 
     return res.status(200).json({ data: post });
   } catch (err) {

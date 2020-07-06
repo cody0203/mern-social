@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { get, includes } from "lodash";
 import moment from "moment";
@@ -24,6 +24,7 @@ import * as actions from "../../system/store/post/post.actions";
 
 const Post = ({ post }) => {
   const dispatch = useDispatch();
+  const commentInputRef = useRef({});
   const [isEditPostModalVisible, setIsEditPostModalVisible] = useState(false);
   const [commentValue, setCommentValue] = useState("");
   const { userInfo } = useSelector((store) => get(store, "authReducer"));
@@ -117,6 +118,10 @@ const Post = ({ post }) => {
     setCommentValue(value);
   };
 
+  const focusCommentInputHandler = () => {
+    commentInputRef.current.focus();
+  };
+
   return (
     <PostStyled>
       <PostContentStyled>
@@ -152,7 +157,7 @@ const Post = ({ post }) => {
             {likeIcon}
             <span>{get(likes, "length")}</span>
           </ActionIconContainer>
-          <ActionIconContainer>
+          <ActionIconContainer onClick={focusCommentInputHandler}>
             <CommentIconStyled />
             <span>{get(comments, "length")}</span>
           </ActionIconContainer>
@@ -160,6 +165,7 @@ const Post = ({ post }) => {
       </PostContentStyled>
 
       <CommentContainerStyle>
+        <CommentContainer comments={comments} />{" "}
         <CommentInputContainer>
           <CustomAvatar
             size={30}
@@ -167,14 +173,13 @@ const Post = ({ post }) => {
           />
 
           <CommentInput
+            ref={commentInputRef}
             placeholder="Write a comment..."
             value={commentValue}
             onPressEnter={commentHandler}
             onChange={onChangeCommentHandler}
           />
         </CommentInputContainer>
-
-        <CommentContainer comments={comments} />
       </CommentContainerStyle>
       <EditPostModal
         onCancel={closeEditPostModal}
@@ -190,7 +195,7 @@ const Post = ({ post }) => {
 
 const PostStyled = styled.div`
   border-radius: 2px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   border: 1px solid ${({ theme }) => get(theme, "colors.lineColor")};
 `;
 
@@ -200,7 +205,7 @@ const PostContentStyled = styled.div`
 
 const TopContainerStyled = styled.div`
   position: relative;
-  padding: 12px 24px;
+  padding: 12px 16px;
   display: flex;
   align-items: center;
 `;
@@ -237,17 +242,17 @@ const TimeStyled = styled.span`
 
 const ContentStyled = styled.div`
   background-color: white;
-  padding: 24px;
+  padding: 16px;
   color: black;
 `;
 
 const ActionContainerStyled = styled.div`
-  padding: 12px 24px;
+  padding: 12px 16px;
   display: flex;
 `;
 
 const ActionIconContainer = styled.div`
-  margin-right: 24px;
+  margin-right: 16px;
   cursor: pointer;
 `;
 
@@ -273,16 +278,17 @@ const MoreIconStyled = styled(EllipsisOutlined)`
   position: absolute;
   top: 10px;
   right: 10px;
-  font-size: 24px;
+  font-size: 16px;
   cursor: pointer;
 `;
 
 const CommentContainerStyle = styled.div`
-  padding: 24px;
+  padding: 16px;
 `;
 
 const CommentInputContainer = styled.div`
   display: flex;
+  margin-top: 24px;
 `;
 
 const CommentInput = styled(Input)`
