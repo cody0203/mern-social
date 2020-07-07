@@ -5,21 +5,38 @@ import errorHandler from "../helpers/dbErrorHandler";
 
 const getPosts = async (req, res, next) => {
   try {
+    const page = parseInt(get(req, "query.page")) || 1;
+    const limit = parseInt(get(req, "query.limit")) || 10;
+
     const userId = get(req, "auth._id");
     const user = await User.findById(userId);
     const following = get(user, "following");
     following.push(userId);
 
-    const posts = await Post.find({
+    const query = {
       owner: { $in: following },
       $or: [{ owner: userId }, { public: true }],
-    })
+    };
+
+    const posts = await Post.find(query)
       .sort({ created: "desc" })
+      .skip((page - 1) * limit)
+      .limit(limit)
       .populate("owner", "name")
       .populate("comments.poster", "name")
       .exec();
 
-    return res.status(200).json({ data: posts });
+    const totalPosts = await Post.countDocuments(query);
+
+    const meta = {
+      total: totalPosts,
+      current_page: page,
+      per_page: limit,
+      page_size: posts.length,
+      total_page: Math.ceil(totalPosts / limit),
+    };
+
+    return res.status(200).json({ data: posts, meta });
   } catch (err) {
     return res.status(404).json({ error: errorHandler.getErrorMessage(err) });
   }
@@ -28,14 +45,30 @@ const getPosts = async (req, res, next) => {
 const getPost = async (req, res, next) => {
   try {
     const userId = get(req, "profile._id");
+    const page = parseInt(get(req, "query.page")) || 1;
+    const limit = parseInt(get(req, "query.limit")) || 10;
 
-    const posts = await Post.find({ owner: userId })
+    const query = { owner: userId };
+
+    const posts = await Post.find(query)
       .sort({ created: "desc" })
+      .skip((page - 1) * limit)
+      .limit(limit)
       .populate("owner", "name")
       .populate("comments.poster", "name")
       .exec();
 
-    return res.status(200).json({ data: posts });
+    const totalPosts = await Post.countDocuments(query);
+
+    const meta = {
+      total: totalPosts,
+      current_page: page,
+      per_page: limit,
+      page_size: posts.length,
+      total_page: Math.ceil(totalPosts / limit),
+    };
+
+    return res.status(200).json({ data: posts, meta });
   } catch (err) {
     console.log(err);
     return res.status(404).json({ error: errorHandler.getErrorMessage(err) });

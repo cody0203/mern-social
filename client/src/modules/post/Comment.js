@@ -17,8 +17,11 @@ const Comment = ({ comment }) => {
           src={`http://localhost:8080/api/user/avatar/${posterId}?${new Date().getTime()}`}
         />
       </Link>
-      <ContentStyled to={`/user/profile/${posterId}`}>
-        <PosterNameStyled>{posterName}</PosterNameStyled> {content}
+      <ContentStyled>
+        <PosterNameStyled to={`/user/profile/${posterId}`}>
+          {posterName}
+        </PosterNameStyled>{" "}
+        {content}
       </ContentStyled>
     </CommentStyled>
   );
