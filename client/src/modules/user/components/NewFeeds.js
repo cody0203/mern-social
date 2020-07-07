@@ -10,13 +10,14 @@ import * as actions from "../../../system/store/post/post.actions";
 
 const NewFeeds = () => {
   const dispatch = useDispatch();
-  const { postListData, postListLoading } = useSelector((store) =>
+  const { postListData, postListLoading, postListMeta } = useSelector((store) =>
     get(store, "postReducer.postList")
   );
 
   useEffect(() => {
-    dispatch(actions.fetchPostListStart());
+    dispatch(actions.fetchPostListStart({}));
   }, []);
+
   const { createPostLoading } = useSelector((store) =>
     get(store, "postReducer")
   );
@@ -29,7 +30,11 @@ const NewFeeds = () => {
           loading={createPostLoading}
         />
       </PostFormContainerStyled>
-      <PostContainer posts={postListData} loading={postListLoading} />
+      <PostContainer
+        posts={postListData}
+        loading={postListLoading}
+        meta={postListMeta}
+      />
     </NewFeedsContainerStyled>
   );
 };

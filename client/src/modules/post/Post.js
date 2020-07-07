@@ -288,7 +288,6 @@ const CommentContainerStyle = styled.div`
 
 const CommentInputContainer = styled.div`
   display: flex;
-  margin-top: 24px;
 `;
 
 const CommentInput = styled(Input)`

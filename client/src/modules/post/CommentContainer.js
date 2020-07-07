@@ -7,10 +7,11 @@ import Comment from "./Comment";
 const CommentContainer = ({ comments }) => {
   return (
     <CommentContainerStyled>
-      {comments.map((comment) => {
-        const id = get(comment, "_id");
-        return <Comment key={id} comment={comment} />;
-      })}
+      {comments &&
+        comments.map((comment) => {
+          const id = get(comment, "_id");
+          return <Comment key={id} comment={comment} />;
+        })}
     </CommentContainerStyled>
   );
 };

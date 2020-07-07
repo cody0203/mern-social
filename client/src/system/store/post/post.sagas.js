@@ -5,13 +5,13 @@ import * as actions from "./post.actions";
 import { HTTP_STATUS } from "../../request/request";
 import * as apis from "./post.apis";
 
-function* fetchPostList() {
+function* fetchPostList({ payload }) {
   try {
-    const response = yield call(apis.fetchPostList);
+    const response = yield call(apis.fetchPostList, payload);
 
-    const { data } = response.data;
+    const { data, meta } = response.data;
 
-    yield put(actions.fetchPostListSuccess(data));
+    yield put(actions.fetchPostListSuccess({ data, meta }));
   } catch (err) {
     const errorMessage = get(err, "response.data.error", err.message);
     yield put(actions.fetchPostListFailure(errorMessage));
@@ -84,9 +84,9 @@ function* fetchUserPost({ payload }) {
   try {
     const response = yield call(apis.fetchUserPost, payload);
 
-    const { data } = response.data;
+    const { data, meta } = response.data;
 
-    yield put(actions.fetchUserPostSuccess(data));
+    yield put(actions.fetchUserPostSuccess({ data, meta }));
   } catch (err) {
     const errorMessage = get(err, "response.data.error", err.message);
     yield put(actions.fetchPostListFailure(errorMessage));

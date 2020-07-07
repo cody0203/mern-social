@@ -1,13 +1,16 @@
+import { get } from "lodash";
 import * as types from "./post.types";
 import * as utils from "./post.utils";
 
 const INITIAL_STATE = {
   postList: {
     postListData: [],
+    postListMeta: null,
     postListLoading: true,
   },
   userPost: {
     userPostData: [],
+    userPostMeta: null,
     userPostLoading: true,
   },
   createPostLoading: false,
@@ -23,15 +26,19 @@ const postReducer = (state = INITIAL_STATE, action) => {
         ...state,
         postList: {
           postListData: [],
+          postListMeta: null,
           postListLoading: true,
         },
       };
 
     case types.FETCH_POST_LIST.SUCCESS:
+      const postListData = get(action, "payload.data");
+      const postListMeta = get(action, "payload.meta");
       return {
         ...state,
         postList: {
-          postListData: action.payload,
+          postListData,
+          postListMeta,
           postListLoading: false,
         },
       };
@@ -41,6 +48,7 @@ const postReducer = (state = INITIAL_STATE, action) => {
         ...state,
         postList: {
           postListData: [],
+          postListMeta: null,
           postListLoading: false,
         },
         error: action.payload,
@@ -147,15 +155,19 @@ const postReducer = (state = INITIAL_STATE, action) => {
         ...state,
         userPost: {
           userPostData: [],
+          userPostMeta: null,
           userPostLoading: true,
         },
       };
 
     case types.FETCH_USER_POST.SUCCESS:
+      const userPostData = get(action, "payload.data");
+      const userPostMeta = get(action, "payload.meta");
       return {
         ...state,
         userPost: {
-          userPostData: action.payload,
+          userPostData,
+          userPostMeta,
           userPostLoading: false,
         },
       };
@@ -165,6 +177,7 @@ const postReducer = (state = INITIAL_STATE, action) => {
         ...state,
         userPost: {
           userPostData: [],
+          userPostMeta: null,
           userPostLoading: false,
         },
         error: action.payload,
