@@ -1,6 +1,7 @@
 import express from "express";
 import authControllers from "../controllers/auth.controller";
 import postControllers from "../controllers/post.controllers";
+import userControllers from "../controllers/user.controller";
 
 const router = express.Router();
 
@@ -30,11 +31,15 @@ router
   .route("/api/post/like/:postId")
   .put(authControllers.requireSignIn, postControllers.likePost);
 
-// router.route('/api/post/unlike/:postId').put(authControllers.requireSignIn, postControllers.unLikePost);
+router
+  .route("/api/post/:userId")
+  .get(
+    authControllers.requireSignIn,
+    authControllers.hasAuthorization,
+    postControllers.getPost
+  );
 
-// router.route('/api/post/:userId').get(authControllers.requireSignIn, postControllers.getPost);
-
-// router.param('userId', userControllers.userById);
+router.param("userId", userControllers.userById);
 
 router.param("postId", postControllers.postById);
 

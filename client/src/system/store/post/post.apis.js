@@ -12,3 +12,5 @@ export const likePost = (id) => request.put(`${endPoints.POST}/like/${id}`);
 
 export const createComment = ({ id, params }) =>
   request.put(`${endPoints.POST}/comment/${id}`, params);
+
+export const fetchUserPost = (id) => request.get(`${endPoints.POST}/${id}`);

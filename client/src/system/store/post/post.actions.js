@@ -72,3 +72,18 @@ export const createCommentFailure = createAction(
   types.CREATE_COMMENT.FAILURE,
   (error) => error
 );
+
+export const fetchUserPostStart = createAction(
+  types.FETCH_USER_POST.START,
+  (payload) => payload
+);
+
+export const fetchUserPostSuccess = createAction(
+  types.FETCH_USER_POST.SUCCESS,
+  (payload) => payload
+);
+
+export const fetchUserPostFailure = createAction(
+  types.FETCH_USER_POST.FAILURE,
+  (error) => error
+);

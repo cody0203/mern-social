@@ -1,14 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { get } from "lodash";
 import styled from "styled-components";
 import PostForm from "../../post/PostForm";
 import PostContainer from "../../post/PostContainer";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import CustomCard from "../../common/components/CustomCard";
 
 import * as actions from "../../../system/store/post/post.actions";
 
 const NewFeeds = () => {
+  const dispatch = useDispatch();
+  const { postListData, postListLoading } = useSelector((store) =>
+    get(store, "postReducer.postList")
+  );
+
+  useEffect(() => {
+    dispatch(actions.fetchPostListStart());
+  }, []);
   const { createPostLoading } = useSelector((store) =>
     get(store, "postReducer")
   );
@@ -21,7 +29,7 @@ const NewFeeds = () => {
           loading={createPostLoading}
         />
       </PostFormContainerStyled>
-      <PostContainer />
+      <PostContainer posts={postListData} loading={postListLoading} />
     </NewFeedsContainerStyled>
   );
 };

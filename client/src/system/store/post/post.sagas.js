@@ -80,10 +80,24 @@ function* createComment({ payload }) {
   }
 }
 
+function* fetchUserPost({ payload }) {
+  try {
+    const response = yield call(apis.fetchUserPost, payload);
+
+    const { data } = response.data;
+
+    yield put(actions.fetchUserPostSuccess(data));
+  } catch (err) {
+    const errorMessage = get(err, "response.data.error", err.message);
+    yield put(actions.fetchPostListFailure(errorMessage));
+  }
+}
+
 export default function* postSagas() {
   yield takeLatest(actions.fetchPostListStart, fetchPostList);
   yield takeLatest(actions.createPostStart, createPost);
   yield takeLatest(actions.updatePostStart, updatePost);
   yield takeLatest(actions.likePostStart, likePost);
   yield takeLatest(actions.createCommentStart, createComment);
+  yield takeLatest(actions.fetchUserPostStart, fetchUserPost);
 }

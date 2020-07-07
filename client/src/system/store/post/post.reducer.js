@@ -6,6 +6,10 @@ const INITIAL_STATE = {
     postListData: [],
     postListLoading: true,
   },
+  userPost: {
+    userPostData: [],
+    userPostLoading: true,
+  },
   createPostLoading: false,
   updatePostLoading: false,
   createCommentLoading: false,
@@ -135,6 +139,34 @@ const postReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         createCommentLoading: false,
+        error: action.payload,
+      };
+
+    case types.FETCH_USER_POST.START:
+      return {
+        ...state,
+        userPost: {
+          userPostData: [],
+          userPostLoading: true,
+        },
+      };
+
+    case types.FETCH_USER_POST.SUCCESS:
+      return {
+        ...state,
+        userPost: {
+          userPostData: action.payload,
+          userPostLoading: false,
+        },
+      };
+
+    case types.FETCH_USER_POST.FAILURE:
+      return {
+        ...state,
+        userPost: {
+          userPostData: [],
+          userPostLoading: false,
+        },
         error: action.payload,
       };
 

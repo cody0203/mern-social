@@ -25,6 +25,23 @@ const getPosts = async (req, res, next) => {
   }
 };
 
+const getPost = async (req, res, next) => {
+  try {
+    const userId = get(req, "profile._id");
+
+    const posts = await Post.find({ owner: userId })
+      .sort({ created: "desc" })
+      .populate("owner", "name")
+      .populate("comments.poster", "name")
+      .exec();
+
+    return res.status(200).json({ data: posts });
+  } catch (err) {
+    console.log(err);
+    return res.status(404).json({ error: errorHandler.getErrorMessage(err) });
+  }
+};
+
 const createPost = async (req, res, next) => {
   try {
     const owner = get(req, "auth._id");
@@ -130,6 +147,7 @@ const postById = async (req, res, next, id) => {
 export default {
   createPost,
   getPosts,
+  getPost,
   updatePost,
   postById,
   isOwner,

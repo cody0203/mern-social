@@ -1,39 +1,46 @@
-import React from 'react';
-import get from 'lodash/get';
-import { Tabs } from 'antd';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import React from "react";
+import get from "lodash/get";
+import { Tabs } from "antd";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
 
-import CustomAvatar from '../../common/components/CustomAvatar';
+import CustomAvatar from "../../common/components/CustomAvatar";
+import PostContainer from "../../post/PostContainer";
 
 const { TabPane } = Tabs;
 
-const ProfileTabs = ({ posts, following, followers }) => {
+const ProfileTabs = ({ posts, following, followers, loading }) => {
   return (
-    <TabContainerStyled type='card'>
-      <TabPane tab='Posts' key='posts'>
-        Posts
+    <TabContainerStyled type="card">
+      <TabPane tab="Posts" key="posts">
+        <PostContainer posts={posts} loading={loading} />
       </TabPane>
-      <TabPanelStyled tab='Following' key='following'>
+      <TabPanelStyled tab="Following" key="following">
         {following.map((people) => {
-          const id = get(people, '_id');
-          const name = get(people, 'name');
+          const id = get(people, "_id");
+          const name = get(people, "name");
 
           return (
             <UserItemStyled key={id} to={`/user/profile/${id}`}>
-              <CustomAvatar size={70} src={`http://localhost:8080/api/user/avatar/${id}?${new Date().getTime()}`} />
+              <CustomAvatar
+                size={70}
+                src={`http://localhost:8080/api/user/avatar/${id}?${new Date().getTime()}`}
+              />
               <UserName>{name}</UserName>
             </UserItemStyled>
           );
         })}
       </TabPanelStyled>
-      <TabPanelStyled tab='Followers' key='followers'>
+      <TabPanelStyled tab="Followers" key="followers">
         {followers.map((people) => {
-          const id = get(people, '_id');
-          const name = get(people, 'name');
+          const id = get(people, "_id");
+          const name = get(people, "name");
           return (
             <UserItemStyled key={id} to={`/user/profile/${id}`}>
-              <CustomAvatar size={70} src={`http://localhost:8080/api/user/avatar/${id}?${new Date().getTime()}`} />
+              <CustomAvatar
+                size={70}
+                src={`http://localhost:8080/api/user/avatar/${id}?${new Date().getTime()}`}
+              />
               <UserName>{name}</UserName>
             </UserItemStyled>
           );
