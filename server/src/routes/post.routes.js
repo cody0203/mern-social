@@ -33,11 +33,7 @@ router
 
 router
   .route("/api/post/:userId")
-  .get(
-    authControllers.requireSignIn,
-    authControllers.hasAuthorization,
-    postControllers.getPost
-  );
+  .get(authControllers.requireSignIn, postControllers.getPost);
 
 router.param("userId", userControllers.userById);
 
