@@ -76,6 +76,7 @@ const likePost = async (req, res, next) => {
     post.likes = uniq(likedBy);
 
     await post.save();
+    await post.populate("comments.poster", "name").execPopulate();
 
     return res.status(200).json({ data: post });
   } catch (err) {
