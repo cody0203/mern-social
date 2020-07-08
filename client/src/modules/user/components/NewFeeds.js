@@ -14,6 +14,10 @@ const NewFeeds = () => {
     get(store, "postReducer.postList")
   );
 
+  const page = get(postListMeta, "current_page");
+  const limit = get(postListMeta, "per_page");
+  const totalPage = get(postListMeta, "total_page");
+
   useEffect(() => {
     dispatch(actions.fetchPostListStart({}));
   }, []);
@@ -21,6 +25,10 @@ const NewFeeds = () => {
   const { createPostLoading } = useSelector((store) =>
     get(store, "postReducer")
   );
+
+  const fetchMorePost = () => {
+    dispatch(actions.fetchPostListStart({ page: page + 1, limit }));
+  };
   return (
     <NewFeedsContainerStyled>
       <PostFormContainerStyled title="New Feeds" $customPadding="0">
@@ -33,7 +41,9 @@ const NewFeeds = () => {
       <PostContainer
         posts={postListData}
         loading={postListLoading}
-        meta={postListMeta}
+        page={page}
+        totalPage={totalPage}
+        action={fetchMorePost}
       />
     </NewFeedsContainerStyled>
   );

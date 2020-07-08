@@ -1,28 +1,59 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { get } from "lodash";
+import React, { useEffect, useState, useLayoutEffect } from "react";
+import { get, isEmpty, unionBy, orderBy } from "lodash";
 import styled from "styled-components";
-import { Virtuoso } from "react-virtuoso";
+
 import { useDispatch } from "react-redux";
 
 import Post from "./Post";
+import PostPlaceHolder from "./PostPlaceHolder";
 
 import * as actions from "../../system/store/post/post.actions";
 
-const PostContainer = ({ posts, loading, meta }) => {
-  const dispatch = useDispatch();
+const PostContainer = ({ posts, loading, page, totalPage, action }) => {
   const [tempData, setTempData] = useState([]);
-
-  const page = get(meta, "current_page");
-  const limit = get(meta, "per_page");
-  const totalPage = get(meta, "total_page");
+  const [isBottom, setIsBottom] = useState(false);
 
   const isEnd = totalPage === page;
 
   useEffect(() => {
-    if (!!posts) {
-      setTempData((data) => [...tempData, ...posts]);
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      setIsBottom(false);
     }
+  }, [loading]);
+
+  useEffect(() => {
+    if (isBottom) {
+      loadMore();
+    }
+  }, [isBottom]);
+
+  useEffect(() => {
+    const data = unionBy([...tempData, ...posts], "_id");
+    setTempData(data);
   }, [posts]);
+
+  useLayoutEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const handleScroll = () => {
+    const bottom =
+      window.innerHeight + window.pageYOffset >=
+      document.body.scrollHeight - 50;
+
+    if (bottom) {
+      console.log(bottom);
+      setIsBottom(true);
+    }
+  };
 
   const loadMore = () => {
     if (loading) {
@@ -32,34 +63,22 @@ const PostContainer = ({ posts, loading, meta }) => {
     if (isEnd) {
       return;
     }
-
-    dispatch(actions.fetchPostListStart({ page: page + 1, limit }));
+    action();
   };
 
   return (
     <PostContainerStyled>
-      {/* {loading ? null : (
+      {loading && isEmpty(tempData) ? null : (
         <>
-          {posts.map((post) => {
+          {orderBy(tempData, ["created"], ["desc", "asc"]).map((post) => {
             const postId = get(post, "_id");
 
             return <Post key={postId} post={post} />;
           })}
         </>
-      )} */}
-      <Virtuoso
-        totalCount={get(tempData, "length")}
-        item={(index) => <Post post={tempData[index]} />}
-        endReached={() => loadMore()}
-        footer={() => {
-          if (isEnd) return;
-          return (
-            <div style={{ padding: "2rem", textAlign: "center" }}>
-              Loading...
-            </div>
-          );
-        }}
-      />
+      )}
+
+      {loading && !isEmpty(tempData) && <PostPlaceHolder />}
     </PostContainerStyled>
   );
 };

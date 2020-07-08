@@ -30,7 +30,7 @@ const Profile = () => {
   const { userProfileLoading, userProfileData } = useSelector((store) =>
     get(store, "userReducer.userProfile")
   );
-  const { userPostData, userPostLoading } = useSelector((store) =>
+  const { userPostData, userPostLoading, userPostMeta } = useSelector((store) =>
     get(store, "postReducer.userPost")
   );
 
@@ -56,7 +56,7 @@ const Profile = () => {
   }, [userId]);
 
   useEffect(() => {
-    dispatch(postActions.fetchUserPostStart(userId));
+    dispatch(postActions.fetchUserPostStart({ id: userId, params: {} }));
   }, [userId]);
 
   useEffect(() => {
@@ -154,6 +154,8 @@ const Profile = () => {
               following={following}
               posts={userPostData}
               loading={userPostLoading}
+              meta={userPostMeta}
+              userId={userId}
             />
           </Styled.BottomStyled>
         </CustomCard>
