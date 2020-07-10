@@ -12,8 +12,16 @@ const Comment = ({ comment }) => {
   const content = get(comment, 'content');
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
+  const changeDropdownVisibleHandler = (visible) => {
+    setIsDropdownVisible(visible);
+  };
+
+  const menuClickHandler = () => {
+    setIsDropdownVisible(false);
+  };
+
   const menu = (
-    <Menu>
+    <Menu onClick={menuClickHandler}>
       <Menu.Item key='0'>
         <p>Edit</p>
       </Menu.Item>
@@ -22,10 +30,6 @@ const Comment = ({ comment }) => {
       </Menu.Item>
     </Menu>
   );
-
-  const changeDropdownVisibleHandler = (visible) => {
-    setIsDropdownVisible(visible);
-  };
 
   return (
     <CommentStyled>
