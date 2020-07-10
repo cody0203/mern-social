@@ -1,16 +1,37 @@
-import { get, extend, uniq, filter } from "lodash";
-import Post from "../models/post.model";
-import User from "../models/user.model";
-import errorHandler from "../helpers/dbErrorHandler";
+import { get, extend, uniq, filter } from 'lodash';
+import Post from '../models/post.model';
+import User from '../models/user.model';
+import errorHandler from '../helpers/dbErrorHandler';
+
+const queryPost = async ({ query, page, limit }) => {
+  const data = await Post.find(query)
+    .sort({ created: 'desc' })
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .populate('owner', 'name')
+    .populate('comments.poster', 'name')
+    .exec();
+
+  const countDocs = await Post.countDocuments(query);
+
+  const meta = {
+    total: countDocs,
+    current_page: page,
+    per_page: limit,
+    page_size: data.length,
+    total_page: Math.ceil(countDocs / limit),
+  };
+  return { data, meta };
+};
 
 const getPosts = async (req, res, next) => {
   try {
-    const page = parseInt(get(req, "query.page")) || 1;
-    const limit = parseInt(get(req, "query.limit")) || 10;
+    const page = parseInt(get(req, 'query.page')) || 1;
+    const limit = parseInt(get(req, 'query.limit')) || 10;
 
-    const userId = get(req, "auth._id");
+    const userId = get(req, 'auth._id');
     const user = await User.findById(userId);
-    const following = get(user, "following");
+    const following = get(user, 'following');
     following.push(userId);
 
     const query = {
@@ -18,25 +39,9 @@ const getPosts = async (req, res, next) => {
       $or: [{ owner: userId }, { public: true }],
     };
 
-    const posts = await Post.find(query)
-      .sort({ created: "desc" })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .populate("owner", "name")
-      .populate("comments.poster", "name")
-      .exec();
+    const { data, meta } = await queryPost({ query, page, limit });
 
-    const totalPosts = await Post.countDocuments(query);
-
-    const meta = {
-      total: totalPosts,
-      current_page: page,
-      per_page: limit,
-      page_size: posts.length,
-      total_page: Math.ceil(totalPosts / limit),
-    };
-
-    return res.status(200).json({ data: posts, meta });
+    return res.status(200).json({ data: data, meta });
   } catch (err) {
     return res.status(404).json({ error: errorHandler.getErrorMessage(err) });
   }
@@ -44,31 +49,14 @@ const getPosts = async (req, res, next) => {
 
 const getPost = async (req, res, next) => {
   try {
-    const userId = get(req, "profile._id");
-    const page = parseInt(get(req, "query.page")) || 1;
-    const limit = parseInt(get(req, "query.limit")) || 10;
+    const userId = get(req, 'profile._id');
+    const page = parseInt(get(req, 'query.page')) || 1;
+    const limit = parseInt(get(req, 'query.limit')) || 10;
 
     const query = { owner: userId };
+    const { data, meta } = await queryPost({ query, page, limit });
 
-    const posts = await Post.find(query)
-      .sort({ created: "desc" })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .populate("owner", "name")
-      .populate("comments.poster", "name")
-      .exec();
-
-    const totalPosts = await Post.countDocuments(query);
-
-    const meta = {
-      total: totalPosts,
-      current_page: page,
-      per_page: limit,
-      page_size: posts.length,
-      total_page: Math.ceil(totalPosts / limit),
-    };
-
-    return res.status(200).json({ data: posts, meta });
+    return res.status(200).json({ data: data, meta });
   } catch (err) {
     console.log(err);
     return res.status(404).json({ error: errorHandler.getErrorMessage(err) });
@@ -77,15 +65,13 @@ const getPost = async (req, res, next) => {
 
 const createPost = async (req, res, next) => {
   try {
-    const owner = get(req, "auth._id");
+    const owner = get(req, 'auth._id');
     const post = new Post({ ...req.body, owner });
 
     const createdPost = await post.save();
-    await createdPost.populate("owner", "name").execPopulate();
+    await createdPost.populate('owner', 'name').execPopulate();
 
-    return res
-      .status(200)
-      .json({ message: "Successfully created post", data: createdPost });
+    return res.status(200).json({ message: 'Successfully created post', data: createdPost });
   } catch (err) {
     return res.status(404).json({ error: errorHandler.getErrorMessage(err) });
   }
@@ -95,12 +81,22 @@ const updatePost = async (req, res, next) => {
   try {
     let post = req.post;
     post = extend(post, req.body);
-    console.log(post);
+
     await post.save();
 
-    return res
-      .status(200)
-      .json({ message: "Update post successfully", data: post });
+    return res.status(200).json({ message: 'Update post successfully', data: post });
+  } catch (err) {
+    return res.status(404).json({ error: errorHandler.getErrorMessage(err) });
+  }
+};
+
+const deletePost = async (req, res, next) => {
+  try {
+    const post = req.post;
+    const postId = get(post, '_id');
+    await Post.deleteOne({ _id: postId });
+
+    return res.status(200).json({ message: 'Deleted', data: post });
   } catch (err) {
     return res.status(404).json({ error: errorHandler.getErrorMessage(err) });
   }
@@ -108,13 +104,11 @@ const updatePost = async (req, res, next) => {
 
 const likePost = async (req, res, next) => {
   try {
-    const userId = get(req, "auth._id");
-    const post = get(req, "post");
+    const userId = get(req, 'auth._id');
+    const post = get(req, 'post');
     let likedBy = [...post.likes];
 
-    const isLiked = likedBy.find(
-      (like) => like.toString() === userId.toString()
-    );
+    const isLiked = likedBy.find((like) => like.toString() === userId.toString());
     if (!isLiked) {
       likedBy.push(userId);
     }
@@ -126,7 +120,7 @@ const likePost = async (req, res, next) => {
     post.likes = uniq(likedBy);
 
     await post.save();
-    await post.populate("comments.poster", "name").execPopulate();
+    await post.populate('comments.poster', 'name').execPopulate();
 
     return res.status(200).json({ data: post });
   } catch (err) {
@@ -136,11 +130,11 @@ const likePost = async (req, res, next) => {
 
 const createComment = async (req, res, next) => {
   try {
-    const post = get(req, "post");
+    const post = get(req, 'post');
     post.comments.push(req.body);
-    console.log(req.body);
+
     await post.save();
-    await post.populate("comments.poster", "name").execPopulate();
+    await post.populate('comments.poster', 'name').execPopulate();
 
     return res.status(200).json({ data: post });
   } catch (err) {
@@ -150,13 +144,10 @@ const createComment = async (req, res, next) => {
 };
 
 const isOwner = (req, res, next) => {
-  const owner =
-    req.post &&
-    req.auth &&
-    req.post.owner._id.toString() === req.auth._id.toString();
+  const owner = req.post && req.auth && req.post.owner._id.toString() === req.auth._id.toString();
 
   if (!owner) {
-    return res.status(403).json({ error: "User is not authorized" });
+    return res.status(403).json({ error: 'User is not authorized' });
   }
 
   next();
@@ -164,10 +155,10 @@ const isOwner = (req, res, next) => {
 
 const postById = async (req, res, next, id) => {
   try {
-    const post = await Post.findById(id).populate("owner", "name").exec();
+    const post = await Post.findById(id).populate('owner', 'name').exec();
 
     if (!post) {
-      return res.status(400).json({ error: "Post not found" });
+      return res.status(400).json({ error: 'Post not found' });
     }
 
     req.post = post;
@@ -186,4 +177,5 @@ export default {
   isOwner,
   likePost,
   createComment,
+  deletePost,
 };

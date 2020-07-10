@@ -9,3 +9,8 @@ export const updatePostList = (source, newItem) => {
     return item;
   });
 };
+
+export const removeItemFromSource = (source, deletedItem) => {
+  const filteredSource = [...source].filter((item) => get(item, '_id') !== get(deletedItem, '_id'));
+  return filteredSource;
+};

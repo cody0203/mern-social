@@ -1,9 +1,9 @@
-import { put, call, takeLatest } from "redux-saga/effects";
-import get from "lodash/get";
+import { put, call, takeLatest } from 'redux-saga/effects';
+import get from 'lodash/get';
 
-import * as actions from "./post.actions";
-import { HTTP_STATUS } from "../../request/request";
-import * as apis from "./post.apis";
+import * as actions from './post.actions';
+import { HTTP_STATUS } from '../../request/request';
+import * as apis from './post.apis';
 
 function* fetchPostList({ payload }) {
   try {
@@ -13,7 +13,7 @@ function* fetchPostList({ payload }) {
 
     yield put(actions.fetchPostListSuccess({ data, meta }));
   } catch (err) {
-    const errorMessage = get(err, "response.data.error", err.message);
+    const errorMessage = get(err, 'response.data.error', err.message);
     yield put(actions.fetchPostListFailure(errorMessage));
   }
 }
@@ -29,7 +29,7 @@ function* createPost({ payload }) {
       yield put(actions.createPostFailure(response.status));
     }
   } catch (err) {
-    const errorMessage = get(err, "response.data.error", err.message);
+    const errorMessage = get(err, 'response.data.error', err.message);
     yield put(actions.createPostFailure(errorMessage));
   }
 }
@@ -45,8 +45,23 @@ function* updatePost({ payload }) {
       yield put(actions.updatePostFailure(response.status));
     }
   } catch (err) {
-    const errorMessage = get(err, "response.data.error", err.message);
+    const errorMessage = get(err, 'response.data.error', err.message);
     yield put(actions.updatePostFailure(errorMessage));
+  }
+}
+
+function* deletePost({ payload }) {
+  try {
+    const response = yield call(apis.deletePost, payload);
+    if (response.status === HTTP_STATUS.SUCCESS) {
+      const { data } = response.data;
+      yield put(actions.deletePostSuccess(data));
+    } else {
+      yield put(actions.deletePostFailure(response.status));
+    }
+  } catch (err) {
+    const errorMessage = get(err, 'response.data.error', err.message);
+    yield put(actions.deletePostFailure(errorMessage));
   }
 }
 
@@ -58,7 +73,7 @@ function* likePost({ payload }) {
 
     yield put(actions.likePostSuccess(data));
   } catch (err) {
-    const errorMessage = get(err, "response.data.error", err.message);
+    const errorMessage = get(err, 'response.data.error', err.message);
     yield put(actions.likePostFailure(errorMessage));
   }
 }
@@ -75,7 +90,7 @@ function* createComment({ payload }) {
       yield put(actions.createCommentFailure(response.status));
     }
   } catch (err) {
-    const errorMessage = get(err, "response.data.error", err.message);
+    const errorMessage = get(err, 'response.data.error', err.message);
     yield put(actions.createCommentFailure(errorMessage));
   }
 }
@@ -88,7 +103,7 @@ function* fetchUserPost({ payload }) {
 
     yield put(actions.fetchUserPostSuccess({ data, meta }));
   } catch (err) {
-    const errorMessage = get(err, "response.data.error", err.message);
+    const errorMessage = get(err, 'response.data.error', err.message);
     yield put(actions.fetchPostListFailure(errorMessage));
   }
 }
@@ -100,4 +115,5 @@ export default function* postSagas() {
   yield takeLatest(actions.likePostStart, likePost);
   yield takeLatest(actions.createCommentStart, createComment);
   yield takeLatest(actions.fetchUserPostStart, fetchUserPost);
+  yield takeLatest(actions.deletePostStart, deletePost);
 }
