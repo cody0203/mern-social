@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { get } from 'lodash';
 import styled from 'styled-components';
+import { Dropdown, Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import { EllipsisOutlined } from '@ant-design/icons';
 import CustomAvatar from '../common/components/CustomAvatar';
@@ -9,6 +10,23 @@ const Comment = ({ comment }) => {
   const posterId = get(comment, 'poster._id');
   const posterName = get(comment, 'poster.name');
   const content = get(comment, 'content');
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+
+  const menu = (
+    <Menu>
+      <Menu.Item key='0'>
+        <p>Edit</p>
+      </Menu.Item>
+      <Menu.Item key='1'>
+        <p>Delete</p>
+      </Menu.Item>
+    </Menu>
+  );
+
+  const changeDropdownVisibleHandler = (visible) => {
+    setIsDropdownVisible(visible);
+  };
+
   return (
     <CommentStyled>
       <Link to={`/user/profile/${posterId}`}>
@@ -17,7 +35,14 @@ const Comment = ({ comment }) => {
       <ContentStyled>
         <PosterNameStyled to={`/user/profile/${posterId}`}>{posterName}</PosterNameStyled> {content}
       </ContentStyled>
-      <MoreIconStyled />
+      <Dropdown
+        visible={isDropdownVisible}
+        overlay={menu}
+        trigger={['click']}
+        onVisibleChange={changeDropdownVisibleHandler}
+      >
+        <MoreIconStyled $isVisible={isDropdownVisible} />
+      </Dropdown>
     </CommentStyled>
   );
 };
@@ -45,7 +70,7 @@ const ContentStyled = styled.p`
 const MoreIconStyled = styled(EllipsisOutlined)`
   position: absolute;
   right: 10px;
-  display: none;
+  display: ${({ $isVisible }) => ($isVisible ? 'block' : 'none')};
   font-size: 18px;
   cursor: pointer;
 
