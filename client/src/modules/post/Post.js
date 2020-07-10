@@ -12,6 +12,7 @@ import {
   LockOutlined,
   MoreOutlined,
   EllipsisOutlined,
+  LoadingOutlined,
 } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -29,6 +30,7 @@ const Post = ({ post }) => {
   const [isEditPostModalVisible, setIsEditPostModalVisible] = useState(false);
   const [isDeletePostModalVisible, setIsDeletePostModalVisible] = useState(false);
   const [commentValue, setCommentValue] = useState('');
+  const [postCommenting, setPostCommenting] = useState(null);
   const { userInfo } = useSelector((store) => get(store, 'authReducer'));
   const { updatePostLoading, createCommentLoading } = useSelector((store) => get(store, 'postReducer'));
   const { deletePostLoading } = useSelector((store) => get(store, 'postReducer.deletePost'));
@@ -111,6 +113,8 @@ const Post = ({ post }) => {
   }
 
   const commentHandler = (e) => {
+    setPostCommenting(postId);
+    commentInputRef.current.blur();
     dispatch(
       actions.createCommentStart({
         id: postId,
@@ -195,6 +199,8 @@ const Post = ({ post }) => {
             value={commentValue}
             onPressEnter={commentHandler}
             onChange={onChangeCommentHandler}
+            disabled={postCommenting === postId && createCommentLoading}
+            suffix={postCommenting === postId && createCommentLoading && <LoadingOutlined />}
           />
         </CommentInputContainer>
       </CommentContainerStyle>

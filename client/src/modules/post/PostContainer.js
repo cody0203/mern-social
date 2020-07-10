@@ -42,7 +42,13 @@ const PostContainer = ({ posts, loading, page, totalPage, action }) => {
   }, [isBottom]);
 
   useEffect(() => {
-    const data = unionBy([...tempData, ...posts], '_id');
+    const data = [
+      ...tempData
+        .concat(posts)
+        .reduce((m, o) => m.set(o._id, Object.assign(m.get(o._id) || {}, o)), new Map())
+        .values(),
+    ];
+    // const data = unionBy([...tempData, ...posts], '_id');
     setTempData(data);
   }, [posts]);
 

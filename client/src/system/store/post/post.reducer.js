@@ -19,7 +19,10 @@ const INITIAL_STATE = {
     deletePostData: {},
     deletePostLoading: false,
   },
-  createCommentLoading: false,
+  createComment: {
+    createCommentLoading: false,
+    createCommentData: {},
+  },
   error: null,
 };
 
