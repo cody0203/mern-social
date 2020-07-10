@@ -315,12 +315,11 @@ const MoreIconStyled = styled(EllipsisOutlined)`
   cursor: pointer;
 `;
 
-const CommentContainerStyle = styled.div`
-  padding: 16px;
-`;
+const CommentContainerStyle = styled.div``;
 
 const CommentInputContainer = styled.div`
   display: flex;
+  margin: 16px;
 `;
 
 const CommentInput = styled(Input)`

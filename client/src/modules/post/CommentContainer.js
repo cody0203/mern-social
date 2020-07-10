@@ -1,21 +1,19 @@
-import React from "react";
-import { get } from "lodash";
-import styled from "styled-components";
+import React from 'react';
+import { get } from 'lodash';
+import styled from 'styled-components';
 
-import Comment from "./Comment";
+import Comment from './Comment';
 
 const CommentContainer = ({ comments }) => {
   return (
-    <CommentContainerStyled>
+    <div>
       {comments &&
         comments.map((comment) => {
-          const id = get(comment, "_id");
+          const id = get(comment, '_id');
           return <Comment key={id} comment={comment} />;
         })}
-    </CommentContainerStyled>
+    </div>
   );
 };
-
-const CommentContainerStyled = styled.div``;
 
 export default CommentContainer;
