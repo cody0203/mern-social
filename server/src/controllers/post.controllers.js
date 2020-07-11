@@ -152,32 +152,6 @@ const likePost = async (req, res, next) => {
   }
 };
 
-const createComment = async (req, res, next) => {
-  try {
-    const ownerId = get(req, "auth._id");
-
-    const post = get(req, "post");
-    const comment = new Comment({ ...req.body, owner: ownerId });
-    await comment.save();
-    const commentId = get(comment, "_id");
-    post.comments.push(commentId);
-    await post.save();
-    await post
-      .populate([
-        {
-          path: "comments",
-          populate: [{ path: "owner", select: "name" }],
-        },
-      ])
-      .execPopulate();
-
-    return res.status(200).json({ data: post });
-  } catch (err) {
-    console.log(err);
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
-  }
-};
-
 const isOwner = (req, res, next) => {
   const owner =
     req.post &&
@@ -232,6 +206,5 @@ export default {
   postById,
   isOwner,
   likePost,
-  createComment,
   deletePost,
 };

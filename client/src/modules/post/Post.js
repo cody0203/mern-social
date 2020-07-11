@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
-import { get, includes } from 'lodash';
-import moment from 'moment';
-import { Link } from 'react-router-dom';
-import { Tooltip, Input, Dropdown, Menu } from 'antd';
+import React, { useState, useEffect, useRef } from "react";
+import styled from "styled-components";
+import { get, includes } from "lodash";
+import moment from "moment";
+import { Link } from "react-router-dom";
+import { Tooltip, Input, Dropdown, Menu } from "antd";
 import {
   HeartFilled,
   HeartOutlined,
@@ -13,50 +13,60 @@ import {
   MoreOutlined,
   EllipsisOutlined,
   LoadingOutlined,
-} from '@ant-design/icons';
-import { useDispatch, useSelector } from 'react-redux';
+} from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
 
-import CustomAvatar from '../common/components/CustomAvatar';
-import PrivacySelect from './PrivacySelect';
-import EditPostModal from './EditPostModal';
-import CommentContainer from './CommentContainer';
-import CustomDeleteConfirmModal from '../common/components/CustomDeleteConfirmModal';
+import CustomAvatar from "../common/components/CustomAvatar";
+import PrivacySelect from "./PrivacySelect";
+import EditPostModal from "./EditPostModal";
+import CommentContainer from "./CommentContainer";
+import CustomDeleteConfirmModal from "../common/components/CustomDeleteConfirmModal";
 
-import * as actions from '../../system/store/post/post.actions';
+import * as actions from "../../system/store/post/post.actions";
+import * as commentActions from "../../system/store/comment/comment.actions";
 
 const Post = ({ post }) => {
   const dispatch = useDispatch();
   const commentInputRef = useRef({});
   const [isEditPostModalVisible, setIsEditPostModalVisible] = useState(false);
-  const [isDeletePostModalVisible, setIsDeletePostModalVisible] = useState(false);
-  const [commentValue, setCommentValue] = useState('');
+  const [isDeletePostModalVisible, setIsDeletePostModalVisible] = useState(
+    false
+  );
+  const [commentValue, setCommentValue] = useState("");
   const [postCommenting, setPostCommenting] = useState(null);
-  const { userInfo } = useSelector((store) => get(store, 'authReducer'));
-  const { updatePostLoading, createCommentLoading } = useSelector((store) => get(store, 'postReducer'));
-  const { deletePostLoading } = useSelector((store) => get(store, 'postReducer.deletePost'));
+  const { userInfo } = useSelector((store) => get(store, "authReducer"));
+  const { updatePostLoading } = useSelector((store) =>
+    get(store, "postReducer")
+  );
+  const { createCommentLoading } = useSelector((store) =>
+    get(store, "commentReducer")
+  );
+  const { deletePostLoading } = useSelector((store) =>
+    get(store, "postReducer.deletePost")
+  );
 
-  const id = get(userInfo, '_id');
-  const name = get(userInfo, 'name');
+  const id = get(userInfo, "_id");
+  const name = get(userInfo, "name");
 
-  const postId = get(post, '_id');
-  const content = get(post, 'content');
-  const created = get(post, 'created');
-  const likes = get(post, 'likes');
-  const isPublic = get(post, 'public');
-  const comments = get(post, 'comments');
-  const owner = get(post, 'owner');
-  const ownerName = get(owner, 'name');
-  const ownerId = get(owner, '_id');
+  const postId = get(post, "_id");
+  const content = get(post, "content");
+  const created = get(post, "created");
+  const likes = get(post, "likes");
+  const isPublic = get(post, "public");
+  const comments = get(post, "comments");
+  const owner = get(post, "owner");
+  const ownerName = get(owner, "name");
+  const ownerId = get(owner, "_id");
 
   let postStatus = (
-    <Tooltip title='Public'>
+    <Tooltip title="Public">
       <GlobalOutlined />
     </Tooltip>
   );
 
   if (!isPublic) {
     postStatus = (
-      <Tooltip title='Only me'>
+      <Tooltip title="Only me">
         <LockOutlined />
       </Tooltip>
     );
@@ -64,7 +74,7 @@ const Post = ({ post }) => {
 
   useEffect(() => {
     if (!createCommentLoading) {
-      setCommentValue('');
+      setCommentValue("");
     }
   }, [createCommentLoading]);
 
@@ -76,15 +86,17 @@ const Post = ({ post }) => {
 
   const changePrivacyPostHandler = (value) => {
     let isPublic;
-    if (value === 'public') {
+    if (value === "public") {
       isPublic = true;
     }
 
-    if (value === 'private') {
+    if (value === "private") {
       isPublic = false;
     }
 
-    dispatch(actions.updatePostStart({ id: postId, params: { public: isPublic } }));
+    dispatch(
+      actions.updatePostStart({ id: postId, params: { public: isPublic } })
+    );
   };
 
   const openEditPostModal = () => {
@@ -116,15 +128,15 @@ const Post = ({ post }) => {
     setPostCommenting(postId);
     commentInputRef.current.blur();
     dispatch(
-      actions.createCommentStart({
+      commentActions.createCommentStart({
         id: postId,
-        params: { content: commentValue, poster: id },
+        params: { content: commentValue, owner: id },
       })
     );
   };
 
   const onChangeCommentHandler = (e) => {
-    const value = get(e, 'target.value');
+    const value = get(e, "target.value");
     setCommentValue(value);
   };
 
@@ -138,10 +150,10 @@ const Post = ({ post }) => {
 
   const menu = (
     <Menu>
-      <Menu.Item key='0'>
+      <Menu.Item key="0">
         <p onClick={openEditPostModal}>Edit</p>
       </Menu.Item>
-      <Menu.Item key='1'>
+      <Menu.Item key="1">
         <p onClick={openDeleteModal}>Delete</p>
       </Menu.Item>
     </Menu>
@@ -152,16 +164,21 @@ const Post = ({ post }) => {
       <PostContentStyled>
         <TopContainerStyled>
           <Link to={`/user/profile/${ownerId}`}>
-            <CustomAvatar size={50} src={`http://localhost:8080/api/user/avatar/${ownerId}?${new Date().getTime()}`} />
+            <CustomAvatar
+              size={50}
+              src={`http://localhost:8080/api/user/avatar/${ownerId}?${new Date().getTime()}`}
+            />
           </Link>
           <TopContentStyled>
-            <OwnerNameStyled to={`/user/profile/${ownerId}`}>{ownerName}</OwnerNameStyled>
+            <OwnerNameStyled to={`/user/profile/${ownerId}`}>
+              {ownerName}
+            </OwnerNameStyled>
             <MetaContainerStyled>
               <TimeStyled>{moment(created).fromNow()}</TimeStyled>
               {id === ownerId ? (
                 <PrivacySelect
                   shorten={true}
-                  isPublic={isPublic ? 'public' : 'private'}
+                  isPublic={isPublic ? "public" : "private"}
                   changePrivacyPostHandler={changePrivacyPostHandler}
                 />
               ) : (
@@ -170,7 +187,7 @@ const Post = ({ post }) => {
             </MetaContainerStyled>
           </TopContentStyled>
           {id === ownerId && (
-            <Dropdown overlay={menu} trigger={['click']}>
+            <Dropdown overlay={menu} trigger={["click"]}>
               <MoreIconStyled />
             </Dropdown>
           )}
@@ -179,28 +196,34 @@ const Post = ({ post }) => {
         <ActionContainerStyled>
           <ActionIconContainer>
             {likeIcon}
-            <span>{get(likes, 'length')}</span>
+            <span>{get(likes, "length")}</span>
           </ActionIconContainer>
           <ActionIconContainer onClick={focusCommentInputHandler}>
             <CommentIconStyled />
-            <span>{get(comments, 'length')}</span>
+            <span>{get(comments, "length")}</span>
           </ActionIconContainer>
         </ActionContainerStyled>
       </PostContentStyled>
 
       <CommentContainerStyle>
-        <CommentContainer comments={comments} />{' '}
+        <CommentContainer comments={comments} />{" "}
         <CommentInputContainer>
-          <CustomAvatar size={30} src={`http://localhost:8080/api/user/avatar/${ownerId}?${new Date().getTime()}`} />
+          <CustomAvatar
+            size={30}
+            src={`http://localhost:8080/api/user/avatar/${ownerId}?${new Date().getTime()}`}
+          />
 
           <CommentInput
             ref={commentInputRef}
-            placeholder='Write a comment...'
+            placeholder="Write a comment..."
             value={commentValue}
             onPressEnter={commentHandler}
             onChange={onChangeCommentHandler}
             disabled={postCommenting === postId && createCommentLoading}
-            suffix={postCommenting === postId && createCommentLoading && <LoadingOutlined />}
+            suffix={
+              postCommenting === postId &&
+              createCommentLoading && <LoadingOutlined />
+            }
           />
         </CommentInputContainer>
       </CommentContainerStyle>
@@ -209,7 +232,7 @@ const Post = ({ post }) => {
         onCancel={closeEditPostModal}
         visible={isEditPostModalVisible}
         initialValue={content}
-        publicStatus={isPublic ? 'public' : 'private'}
+        publicStatus={isPublic ? "public" : "private"}
         postId={postId}
         loading={updatePostLoading}
       />
@@ -217,8 +240,8 @@ const Post = ({ post }) => {
       <CustomDeleteConfirmModal
         visible={isDeletePostModalVisible}
         onCancel={closeDeleteModal}
-        title='Delete post'
-        desc='Confirm to delete this post?'
+        title="Delete post"
+        desc="Confirm to delete this post?"
         onOk={deletePostHandler}
         loading={deletePostLoading}
       />
@@ -229,11 +252,11 @@ const Post = ({ post }) => {
 const PostStyled = styled.div`
   border-radius: 2px;
   margin-bottom: 16px;
-  border: 1px solid ${({ theme }) => get(theme, 'colors.lineColor')};
+  border: 1px solid ${({ theme }) => get(theme, "colors.lineColor")};
 `;
 
 const PostContentStyled = styled.div`
-  background-color: ${({ theme }) => get(theme, 'colors.background')};
+  background-color: ${({ theme }) => get(theme, "colors.background")};
 `;
 
 const TopContainerStyled = styled.div`
@@ -248,7 +271,7 @@ const TopContentStyled = styled.div`
 `;
 
 const OwnerNameStyled = styled(Link)`
-  color: ${({ theme }) => get(theme, 'colors.primary')};
+  color: ${({ theme }) => get(theme, "colors.primary")};
 `;
 
 const MetaContainerStyled = styled.div`
@@ -265,7 +288,7 @@ const TimeStyled = styled.span`
     position: absolute;
     top: calc(50% - 2px);
     right: 0;
-    content: '';
+    content: "";
     width: 4px;
     height: 4px;
     background-color: rgba(0, 0, 0, 0.35);
@@ -291,19 +314,19 @@ const ActionIconContainer = styled.div`
 
 const LikedIconStyled = styled(HeartFilled)`
   font-size: 20px;
-  color: ${({ theme }) => get(theme, 'colors.primary')};
+  color: ${({ theme }) => get(theme, "colors.primary")};
   margin-right: 6px;
 `;
 
 const LikeIconStyled = styled(HeartOutlined)`
   font-size: 20px;
-  color: ${({ theme }) => get(theme, 'colors.primary')};
+  color: ${({ theme }) => get(theme, "colors.primary")};
   margin-right: 6px;
 `;
 
 const CommentIconStyled = styled(MessageFilled)`
   font-size: 20px;
-  color: ${({ theme }) => get(theme, 'colors.primary')};
+  color: ${({ theme }) => get(theme, "colors.primary")};
   margin-right: 6px;
 `;
 

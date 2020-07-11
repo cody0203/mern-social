@@ -1,6 +1,6 @@
-import { get } from 'lodash';
-import * as types from './post.types';
-import * as utils from './post.utils';
+import { get } from "lodash";
+import * as types from "./post.types";
+import * as utils from "./post.utils";
 
 const INITIAL_STATE = {
   postList: {
@@ -39,8 +39,8 @@ const postReducer = (state = INITIAL_STATE, action) => {
       };
 
     case types.FETCH_POST_LIST.SUCCESS:
-      const postListData = get(action, 'payload.data');
-      const postListMeta = get(action, 'payload.meta');
+      const postListData = get(action, "payload.data");
+      const postListMeta = get(action, "payload.meta");
       return {
         ...state,
         postList: {
@@ -96,10 +96,6 @@ const postReducer = (state = INITIAL_STATE, action) => {
     case types.UPDATE_POST.SUCCESS:
       return {
         ...state,
-        postList: {
-          ...state.postList,
-          postListData: utils.updatePostList(state.postList.postListData, action.payload),
-        },
         updatePostLoading: false,
       };
 
@@ -141,38 +137,11 @@ const postReducer = (state = INITIAL_STATE, action) => {
     case types.LIKE_POST.SUCCESS:
       return {
         ...state,
-        postList: {
-          ...state.postList,
-          postListData: utils.updatePostList(state.postList.postListData, action.payload),
-        },
       };
 
     case types.LIKE_POST.FAILURE:
       return {
         ...state,
-        error: action.payload,
-      };
-
-    case types.CREATE_COMMENT.START:
-      return {
-        ...state,
-        createCommentLoading: true,
-      };
-
-    case types.CREATE_COMMENT.SUCCESS:
-      return {
-        ...state,
-        createCommentLoading: false,
-        postList: {
-          ...state.postList,
-          postListData: utils.updatePostList(state.postList.postListData, action.payload),
-        },
-      };
-
-    case types.CREATE_COMMENT.FAILURE:
-      return {
-        ...state,
-        createCommentLoading: false,
         error: action.payload,
       };
 
@@ -187,8 +156,8 @@ const postReducer = (state = INITIAL_STATE, action) => {
       };
 
     case types.FETCH_USER_POST.SUCCESS:
-      const userPostData = get(action, 'payload.data');
-      const userPostMeta = get(action, 'payload.meta');
+      const userPostData = get(action, "payload.data");
+      const userPostMeta = get(action, "payload.meta");
       return {
         ...state,
         userPost: {
@@ -207,6 +176,18 @@ const postReducer = (state = INITIAL_STATE, action) => {
           userPostLoading: false,
         },
         error: action.payload,
+      };
+
+    case types.UPDATE_POST_LIST_DATA:
+      return {
+        ...state,
+        postList: {
+          ...state.postList,
+          postListData: utils.updatePostList(
+            state.postList.postListData,
+            action.payload
+          ),
+        },
       };
 
     default:

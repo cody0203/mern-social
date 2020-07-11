@@ -1,7 +1,7 @@
 import express from 'express';
 
-import userControllers from '../controllers/user.controller';
-import authControllers from '../controllers/auth.controller';
+import userControllers from '../controllers/user.controllers';
+import authControllers from '../controllers/auth.controllers';
 
 const router = express.Router();
 

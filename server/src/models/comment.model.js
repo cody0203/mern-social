@@ -11,19 +11,16 @@ const commentSchema = new Schema({
     {
       type: Schema.ObjectId,
       ref: "User",
-      required: true,
     },
   ],
   replies: [
     {
       content: {
         type: String,
-        required: true,
       },
       replier: {
         type: Schema.ObjectId,
         ref: "User",
-        required: true,
       },
     },
   ],
