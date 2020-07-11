@@ -162,7 +162,14 @@ const createComment = async (req, res, next) => {
     const commentId = get(comment, "_id");
     post.comments.push(commentId);
     await post.save();
-    // await post.populate("comments.poster", "name").execPopulate();
+    await post
+      .populate([
+        {
+          path: "comments",
+          populate: [{ path: "owner", select: "name" }],
+        },
+      ])
+      .execPopulate();
 
     return res.status(200).json({ data: post });
   } catch (err) {
