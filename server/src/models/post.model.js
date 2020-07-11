@@ -20,11 +20,8 @@ const postSchema = new Schema({
   likes: [{ type: Schema.ObjectId, ref: "User" }],
   comments: [
     {
-      content: { type: String, required: true },
-      poster: {
-        type: Schema.ObjectId,
-        ref: "User",
-      },
+      type: Schema.ObjectId,
+      ref: "Comment",
     },
   ],
   owner: {

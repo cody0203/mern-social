@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { get } from 'lodash';
-import styled from 'styled-components';
-import { Dropdown, Menu } from 'antd';
-import { Link } from 'react-router-dom';
-import { EllipsisOutlined } from '@ant-design/icons';
-import CustomAvatar from '../common/components/CustomAvatar';
+import React, { useState } from "react";
+import { get } from "lodash";
+import styled from "styled-components";
+import { Dropdown, Menu } from "antd";
+import { Link } from "react-router-dom";
+import { EllipsisOutlined } from "@ant-design/icons";
+import CustomAvatar from "../common/components/CustomAvatar";
 
 const Comment = ({ comment }) => {
-  const posterId = get(comment, 'poster._id');
-  const posterName = get(comment, 'poster.name');
-  const content = get(comment, 'content');
+  const posterId = get(comment, "owner._id");
+  const posterName = get(comment, "owner.name");
+  const content = get(comment, "content");
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
   const changeDropdownVisibleHandler = (visible) => {
@@ -22,10 +22,10 @@ const Comment = ({ comment }) => {
 
   const menu = (
     <Menu onClick={menuClickHandler}>
-      <Menu.Item key='0'>
+      <Menu.Item key="0">
         <p>Edit</p>
       </Menu.Item>
-      <Menu.Item key='1'>
+      <Menu.Item key="1">
         <p>Delete</p>
       </Menu.Item>
     </Menu>
@@ -34,15 +34,21 @@ const Comment = ({ comment }) => {
   return (
     <CommentStyled>
       <Link to={`/user/profile/${posterId}`}>
-        <CustomAvatar size={30} src={`http://localhost:8080/api/user/avatar/${posterId}?${new Date().getTime()}`} />
+        <CustomAvatar
+          size={30}
+          src={`http://localhost:8080/api/user/avatar/${posterId}?${new Date().getTime()}`}
+        />
       </Link>
       <ContentStyled>
-        <PosterNameStyled to={`/user/profile/${posterId}`}>{posterName}</PosterNameStyled> {content}
+        <PosterNameStyled to={`/user/profile/${posterId}`}>
+          {posterName}
+        </PosterNameStyled>{" "}
+        {content}
       </ContentStyled>
       <Dropdown
         visible={isDropdownVisible}
         overlay={menu}
-        trigger={['click']}
+        trigger={["click"]}
         onVisibleChange={changeDropdownVisibleHandler}
       >
         <MoreIconStyled $isVisible={isDropdownVisible} />
@@ -60,13 +66,13 @@ const CommentStyled = styled.div`
 `;
 
 const PosterNameStyled = styled(Link)`
-  color: ${({ theme }) => get(theme, 'colors.primary')};
+  color: ${({ theme }) => get(theme, "colors.primary")};
   font-weight: 500;
 `;
 
 const ContentStyled = styled.p`
   padding: 8px 16px;
-  background-color: ${({ theme }) => get(theme, 'colors.background')};
+  background-color: ${({ theme }) => get(theme, "colors.background")};
   margin-left: 16px;
   border-radius: 50px;
 `;
@@ -74,7 +80,7 @@ const ContentStyled = styled.p`
 const MoreIconStyled = styled(EllipsisOutlined)`
   position: absolute;
   right: 10px;
-  display: ${({ $isVisible }) => ($isVisible ? 'block' : 'none')};
+  display: ${({ $isVisible }) => ($isVisible ? "block" : "none")};
   font-size: 18px;
   cursor: pointer;
 
