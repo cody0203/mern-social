@@ -3,29 +3,14 @@ import Post from "../models/post.model";
 import User from "../models/user.model";
 import Comment from "../models/comment.model";
 import errorHandler from "../helpers/dbErrorHandler";
+import { postPopulateQuery } from "../helpers/populateQuery";
 
 const queryPost = async ({ query, page, limit }) => {
   const data = await Post.find(query)
     .sort({ created: "desc" })
     .skip((page - 1) * limit)
     .limit(limit)
-    .populate([
-      { path: "owner", select: "name" },
-      {
-        path: "comments",
-        populate: [
-          { path: "likes", select: "name" },
-          {
-            path: "replies",
-            populate: {
-              path: "replier",
-              select: "name",
-            },
-          },
-          { path: "owner", select: "name" },
-        ],
-      },
-    ])
+    .populate(postPopulateQuery)
     .exec();
 
   const countDocs = await Post.countDocuments(query);
@@ -167,25 +152,7 @@ const isOwner = (req, res, next) => {
 
 const postById = async (req, res, next, id) => {
   try {
-    const post = await Post.findById(id)
-      .populate([
-        { path: "owner", select: "name" },
-        {
-          path: "comments",
-          populate: [
-            { path: "likes", select: "name" },
-            {
-              path: "replies",
-              populate: {
-                path: "replier",
-                select: "name",
-              },
-            },
-            { path: "owner", select: "name" },
-          ],
-        },
-      ])
-      .exec();
+    const post = await Post.findById(id).populate(postPopulateQuery).exec();
 
     if (!post) {
       return res.status(400).json({ error: "Post not found" });

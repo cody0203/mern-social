@@ -29,6 +29,7 @@ const commentSchema = new Schema({
     ref: "User",
     required: true,
   },
+  postId: { type: Schema.ObjectId, ref: "Post", required: true },
   created: {
     type: Date,
     default: Date.now,

@@ -2,6 +2,8 @@ import * as types from "./comment.types";
 
 const INITIAL_STATE = {
   createCommentLoading: false,
+  likeCommentLoading: false,
+  error: null,
 };
 
 const commentReducer = (state = INITIAL_STATE, action) => {
@@ -22,6 +24,25 @@ const commentReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         createCommentLoading: false,
+        error: action.payload,
+      };
+
+    case types.LIKE_COMMENT.START:
+      return {
+        ...state,
+        likeCommentLoading: true,
+      };
+
+    case types.LIKE_COMMENT.SUCCESS:
+      return {
+        ...state,
+        likeCommentLoading: false,
+      };
+
+    case types.LIKE_COMMENT.FAILURE:
+      return {
+        ...state,
+        likeCommentLoading: false,
         error: action.payload,
       };
 

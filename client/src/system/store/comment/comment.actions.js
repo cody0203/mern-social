@@ -12,3 +12,15 @@ export const createCommentFailure = createAction(
   types.CREATE_COMMENT.FAILURE,
   (error) => error
 );
+
+export const likeCommentStart = createAction(
+  types.LIKE_COMMENT.START,
+  (payload) => payload
+);
+
+export const likeCommentSuccess = createAction(types.LIKE_COMMENT.SUCCESS);
+
+export const likeCommentFailure = createAction(
+  types.LIKE_COMMENT.FAILURE,
+  (error) => error
+);

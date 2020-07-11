@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import CustomAvatar from "../common/components/CustomAvatar";
 import PrivacySelect from "./PrivacySelect";
 import EditPostModal from "./EditPostModal";
-import CommentContainer from "./CommentContainer";
+import CommentContainer from "../comment/CommentContainer";
 import CustomDeleteConfirmModal from "../common/components/CustomDeleteConfirmModal";
 
 import * as actions from "../../system/store/post/post.actions";
