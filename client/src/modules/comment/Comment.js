@@ -152,12 +152,13 @@ const CommentActionsContainerStyled = styled.div`
 `;
 
 const CommentActionStyled = styled.span`
-  color: ${({ theme }) => get(theme, "colors.primary")};
+  color: ${({ theme }) => get(theme, "colors.primaryDark")};
   cursor: pointer;
 `;
 
 const LikeActionStyled = styled(CommentActionStyled)`
-  font-weight: ${({ $isLiked }) => ($isLiked ? "bold" : "normal")};
+  font-weight: ${({ $isLiked }) => ($isLiked ? "800" : "400")};
+  color: ${({ $isLiked, theme }) => $isLiked && get(theme, "colors.primary")};
 `;
 
 const LikeContainerStyled = styled.div`

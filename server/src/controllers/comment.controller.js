@@ -40,7 +40,7 @@ const likeComment = async (req, res, next) => {
     const comment = get(req, "comment");
     const postId = get(comment, "postId");
     let likedBy = [...comment.likes];
-    console.log(likedBy);
+
     const isLiked = likedBy.find(
       (like) => like.toString() === userId.toString()
     );
