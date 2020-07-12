@@ -215,8 +215,7 @@ const LikeCounterStyled = styled.span`
 `;
 
 const CommentFieldContainerStyled = styled.div`
-  max-width: 90%;
-  margin-left: auto;
+  margin-left: 50px;
 `;
 
 export default Comment;
