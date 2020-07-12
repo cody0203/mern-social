@@ -5,10 +5,13 @@ export const postPopulateQuery = [
     populate: [
       {
         path: "replies",
-        populate: {
-          path: "replier",
-          select: "name",
-        },
+        populate: [
+          {
+            path: "owner",
+            select: "name",
+          },
+          { path: "owner", select: "name" },
+        ],
       },
       { path: "owner", select: "name" },
     ],

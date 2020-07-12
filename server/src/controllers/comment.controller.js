@@ -70,7 +70,34 @@ const deleteComment = async (req, res, next) => {
 
     const post = await Post.findById(postId);
     return res.status(200).json({ message: "Comment deleted", data: post });
-  } catch (err) {}
+  } catch (err) {
+    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  }
+};
+
+const createReply = async (req, res, next) => {
+  try {
+    const comment = get(req, "comment");
+    const commentId = get(req, "comment._id");
+    const postId = get(req, "comment.postId");
+    const content = get(req, "body.content");
+    const ownerId = get(req, "auth._id");
+    const reply = new Comment({
+      content: content,
+      owner: ownerId,
+      postId: commentId,
+    });
+    await reply.save();
+    const replyId = get(reply, "_id");
+    comment.replies.push(replyId);
+    await comment.save();
+
+    const post = await Post.findById(postId).populate(postPopulateQuery).exec();
+
+    return res.status(200).json({ data: post });
+  } catch (err) {
+    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  }
 };
 
 const commentById = async (req, res, next, id) => {
@@ -112,4 +139,5 @@ export default {
   likeComment,
   deleteComment,
   isPoster,
+  createReply,
 };

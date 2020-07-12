@@ -13,17 +13,7 @@ const commentSchema = new Schema({
       ref: "User",
     },
   ],
-  replies: [
-    {
-      content: {
-        type: String,
-      },
-      replier: {
-        type: Schema.ObjectId,
-        ref: "User",
-      },
-    },
-  ],
+  replies: [{ type: Schema.ObjectId, ref: "Comment", required: true }],
   owner: {
     type: Schema.ObjectId,
     ref: "User",
