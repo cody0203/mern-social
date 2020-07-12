@@ -61,6 +61,18 @@ const likeComment = async (req, res, next) => {
   }
 };
 
+const deleteComment = async (req, res, next) => {
+  try {
+    const comment = get(req, "comment");
+    const commentId = get(comment, "_id");
+    const postId = get(comment, "postId");
+    await Comment.deleteOne({ _id: commentId });
+
+    const post = await Post.findById(postId);
+    return res.status(200).json({ message: "Comment deleted", data: post });
+  } catch (err) {}
+};
+
 const commentById = async (req, res, next, id) => {
   try {
     const comment = await Comment.findById(id)
@@ -77,4 +89,27 @@ const commentById = async (req, res, next, id) => {
   }
 };
 
-export default { createComment, commentById, likeComment };
+const isPoster = async (req, res, next) => {
+  try {
+    const isPoster =
+      req.auth &&
+      req.comment &&
+      get(req, "auth._id").toString() === get(comment, "owner._id").toString();
+
+    if (!isPoster) {
+      return res.status(403).json({ error: "User is not authorized" });
+    }
+
+    next();
+  } catch (err) {
+    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  }
+};
+
+export default {
+  createComment,
+  commentById,
+  likeComment,
+  deleteComment,
+  isPoster,
+};

@@ -101,8 +101,9 @@ const deletePost = async (req, res, next) => {
   try {
     const post = req.post;
     const postId = get(post, "_id");
-    await Post.deleteOne({ _id: postId });
 
+    await Post.deleteOne({ _id: postId });
+    await Comment.deleteMany({ postId });
     return res.status(200).json({ message: "Deleted", data: post });
   } catch (err) {
     return res.status(404).json({ error: errorHandler.getErrorMessage(err) });

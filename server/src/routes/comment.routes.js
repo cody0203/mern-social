@@ -15,6 +15,12 @@ router
   .route("/api/comment/like/:commentId")
   .put(authControllers.requireSignIn, commentControllers.likeComment);
 
+router.delete(
+  "/api/comment/:commentId",
+  commentControllers.isPoster,
+  commentControllers.deleteComment
+);
+
 router.param("postId", postControllers.postById);
 
 router.param("commentId", commentControllers.commentById);
