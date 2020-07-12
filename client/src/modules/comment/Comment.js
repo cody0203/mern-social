@@ -7,11 +7,12 @@ import { EllipsisOutlined, LikeFilled } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 
 import CustomAvatar from "../common/components/CustomAvatar";
+import CommentField from "./CommentField";
 
 import * as actions from "../../system/store/comment/comment.actions";
 
 const Comment = ({ comment }) => {
-  const commentRef = useRef({});
+  const commentInputRef = useRef({});
   const dispatch = useDispatch();
   const { userInfo } = useSelector((store) => get(store, "authReducer"));
   const userId = get(userInfo, "_id");
@@ -23,15 +24,16 @@ const Comment = ({ comment }) => {
   const totalLike = get(likes, "length");
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [isShortComment, setIsShortComment] = useState(true);
+  const [isReplyInputVisible, setIsReplyInputVisible] = useState(false);
+  const [currentReplyId, setCurrentReplyId] = useState(null);
 
   const isLiked = includes(likes, userId);
 
   useEffect(() => {
-    const currentWidth = get(commentRef, "current.offsetWidth");
-    if (currentWidth > 250) {
+    if (get(content, "length") > 30) {
       setIsShortComment(false);
     }
-  }, [commentRef]);
+  }, [content]);
 
   const changeDropdownVisibleHandler = (visible) => {
     setIsDropdownVisible(visible);
@@ -63,44 +65,64 @@ const Comment = ({ comment }) => {
     </LikeContainerStyled>
   );
 
+  const showReplyInput = () => {
+    if (isReplyInputVisible && currentReplyId === id) {
+      commentInputRef.current.focus();
+      return;
+    }
+
+    setIsReplyInputVisible(true);
+    setCurrentReplyId(id);
+  };
+
   return (
-    <CommentStyled>
-      <Link to={`/user/profile/${posterId}`}>
-        <CustomAvatar
-          size={30}
-          src={`http://localhost:8080/api/user/avatar/${posterId}?${new Date().getTime()}`}
-        />
-      </Link>
-      <ContentContainerStyled>
-        <div ref={commentRef}>
-          <ContentStyled>
-            <PosterNameStyled to={`/user/profile/${posterId}`}>
-              {posterName}
-            </PosterNameStyled>{" "}
-            {content} {totalLike > 0 && !isShortComment && <>{likeContainer}</>}
-          </ContentStyled>{" "}
-          <CommentActionsContainerStyled>
-            <LikeActionStyled onClick={likeCommentHandler} $isLiked={isLiked}>
-              Like
-            </LikeActionStyled>
-            <span> · </span>
-            <CommentActionStyled>Reply</CommentActionStyled>
-          </CommentActionsContainerStyled>
-        </div>{" "}
-        {totalLike > 0 && isShortComment && <>{likeContainer}</>}
-        <Dropdown
-          visible={isDropdownVisible}
-          overlay={menu}
-          trigger={["click"]}
-          onVisibleChange={changeDropdownVisibleHandler}
-        >
-          <MoreIconStyled
-            $isVisible={isDropdownVisible}
-            className={`${!isShortComment ? "long-comment" : ""}`}
+    <>
+      <CommentStyled>
+        <Link to={`/user/profile/${posterId}`}>
+          <CustomAvatar
+            size={30}
+            src={`http://localhost:8080/api/user/avatar/${posterId}?${new Date().getTime()}`}
           />
-        </Dropdown>
-      </ContentContainerStyled>
-    </CommentStyled>
+        </Link>
+        <ContentContainerStyled>
+          <div>
+            <ContentStyled>
+              <PosterNameStyled to={`/user/profile/${posterId}`}>
+                {posterName}
+              </PosterNameStyled>{" "}
+              {content}{" "}
+              {totalLike > 0 && !isShortComment && <>{likeContainer}</>}
+            </ContentStyled>{" "}
+            <CommentActionsContainerStyled>
+              <LikeActionStyled onClick={likeCommentHandler} $isLiked={isLiked}>
+                Like
+              </LikeActionStyled>
+              <span> · </span>
+              <CommentActionStyled onClick={showReplyInput}>
+                Reply
+              </CommentActionStyled>
+            </CommentActionsContainerStyled>
+          </div>{" "}
+          {totalLike > 0 && isShortComment && <>{likeContainer}</>}
+          <Dropdown
+            visible={isDropdownVisible}
+            overlay={menu}
+            trigger={["click"]}
+            onVisibleChange={changeDropdownVisibleHandler}
+          >
+            <MoreIconStyled
+              $isVisible={isDropdownVisible}
+              className={`${!isShortComment ? "long-comment" : ""}`}
+            />
+          </Dropdown>
+        </ContentContainerStyled>
+      </CommentStyled>
+      {isReplyInputVisible && currentReplyId === id && (
+        <CommentFieldContainerStyled>
+          <CommentField ref={commentInputRef} ownerId={userId} />
+        </CommentFieldContainerStyled>
+      )}
+    </>
   );
 };
 
@@ -109,7 +131,11 @@ const CommentStyled = styled.div`
   display: flex;
   align-items: center;
   width: fit-content;
-  padding: 16px 36px 0 16px;
+  padding: 0 36px 16px 16px;
+
+  &:first-child {
+    padding-top: 16px;
+  }
 `;
 
 const ContentContainerStyled = styled.div`
@@ -164,7 +190,7 @@ const LikeActionStyled = styled(CommentActionStyled)`
 const LikeContainerStyled = styled.div`
   &.long-comment {
     position: absolute;
-    bottom: 0px;
+    bottom: -16px;
     right: 0px;
   }
 
@@ -186,6 +212,11 @@ const LikeIconStyled = styled(LikeFilled)`
 
 const LikeCounterStyled = styled.span`
   margin-left: 3px;
+`;
+
+const CommentFieldContainerStyled = styled.div`
+  max-width: 90%;
+  margin-left: auto;
 `;
 
 export default Comment;

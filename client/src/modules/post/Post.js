@@ -20,6 +20,7 @@ import CustomAvatar from "../common/components/CustomAvatar";
 import PrivacySelect from "./PrivacySelect";
 import EditPostModal from "./EditPostModal";
 import CommentContainer from "../comment/CommentContainer";
+import CommentField from "../comment/CommentField";
 import CustomDeleteConfirmModal from "../common/components/CustomDeleteConfirmModal";
 
 import * as actions from "../../system/store/post/post.actions";
@@ -205,27 +206,18 @@ const Post = ({ post }) => {
         </ActionContainerStyled>
       </PostContentStyled>
 
+      <CommentContainer comments={comments} />
       <CommentContainerStyle>
-        <CommentContainer comments={comments} />{" "}
-        <CommentInputContainer>
-          <CustomAvatar
-            size={30}
-            src={`http://localhost:8080/api/user/avatar/${ownerId}?${new Date().getTime()}`}
-          />
-
-          <CommentInput
-            ref={commentInputRef}
-            placeholder="Write a comment..."
-            value={commentValue}
-            onPressEnter={commentHandler}
-            onChange={onChangeCommentHandler}
-            disabled={postCommenting === postId && createCommentLoading}
-            suffix={
-              postCommenting === postId &&
-              createCommentLoading && <LoadingOutlined />
-            }
-          />
-        </CommentInputContainer>
+        <CommentField
+          ref={commentInputRef}
+          value={commentValue}
+          ownerId={ownerId}
+          onPressEnter={commentHandler}
+          onChange={onChangeCommentHandler}
+          currentId={postCommenting}
+          targetId={postId}
+          loading={createCommentLoading}
+        />
       </CommentContainerStyle>
 
       <EditPostModal
@@ -338,16 +330,7 @@ const MoreIconStyled = styled(EllipsisOutlined)`
   cursor: pointer;
 `;
 
-const CommentContainerStyle = styled.div``;
-
-const CommentInputContainer = styled.div`
-  display: flex;
-  margin: 16px;
+const CommentContainerStyle = styled.div`
+  width: 100%;
 `;
-
-const CommentInput = styled(Input)`
-  margin-left: 16px;
-  border-radius: 50px;
-`;
-
 export default Post;
