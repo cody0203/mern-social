@@ -17,12 +17,15 @@ router
 
 router
   .route("/api/comment/:commentId")
-  .put(authControllers.requireSignIn, commentControllers.createReply)
   .delete(
     authControllers.requireSignIn,
     commentControllers.isPoster,
     commentControllers.deleteComment
   );
+
+router
+  .route("/api/reply/:commentId")
+  .post(authControllers.requireSignIn, commentControllers.createReply);
 
 router.param("postId", postControllers.postById);
 

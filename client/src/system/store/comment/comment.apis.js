@@ -6,3 +6,6 @@ export const createComment = ({ id, params }) =>
 
 export const likeComment = (id) =>
   request.put(`${endPoints.COMMENT}/like/${id}`);
+
+export const createReply = ({ id, params }) =>
+  request.post(`${endPoints.REPLY}/${id}`, params);

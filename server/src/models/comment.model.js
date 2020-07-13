@@ -20,6 +20,7 @@ const commentSchema = new Schema({
     required: true,
   },
   postId: { type: Schema.ObjectId, ref: "Post", required: true },
+  commentId: { type: Schema.ObjectId, ref: "Post" },
   created: {
     type: Date,
     default: Date.now,

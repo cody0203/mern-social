@@ -85,7 +85,8 @@ const createReply = async (req, res, next) => {
     const reply = new Comment({
       content: content,
       owner: ownerId,
-      postId: commentId,
+      commentId: commentId,
+      postId: postId,
     });
     await reply.save();
     const replyId = get(reply, "_id");

@@ -24,3 +24,18 @@ export const likeCommentFailure = createAction(
   types.LIKE_COMMENT.FAILURE,
   (error) => error
 );
+
+export const createReplyStart = createAction(
+  types.CREATE_REPLY.START,
+  (payload) => payload
+);
+
+export const createReplySuccess = createAction(
+  types.CREATE_REPLY.SUCCESS,
+  (payload) => payload
+);
+
+export const createReplyFailure = createAction(
+  types.CREATE_REPLY.FAILURE,
+  (error) => error
+);

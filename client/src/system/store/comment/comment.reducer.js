@@ -3,6 +3,7 @@ import * as types from "./comment.types";
 const INITIAL_STATE = {
   createCommentLoading: false,
   likeCommentLoading: false,
+  createReplyLoading: false,
   error: null,
 };
 
@@ -43,6 +44,25 @@ const commentReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         likeCommentLoading: false,
+        error: action.payload,
+      };
+
+    case types.CREATE_REPLY.START:
+      return {
+        ...state,
+        createReplyLoading: true,
+      };
+
+    case types.CREATE_REPLY.SUCCESS:
+      return {
+        ...state,
+        createReplyLoading: false,
+      };
+
+    case types.CREATE_REPLY.FAILURE:
+      return {
+        ...state,
+        createReplyLoading: false,
         error: action.payload,
       };
 
