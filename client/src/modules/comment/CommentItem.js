@@ -16,6 +16,7 @@ const CommentItem = ({
   userId,
   menuClickHandler,
   changeDropdownVisibleHandler,
+  isReply,
 }) => {
   const posterId = get(comment, 'owner._id');
   const id = get(comment, '_id');
@@ -52,7 +53,7 @@ const CommentItem = ({
               Like
             </LikeActionStyled>
             <span> · </span>
-            <CommentActionStyled onClick={showReplyInput}>Reply</CommentActionStyled>
+            {!isReply && <CommentActionStyled onClick={showReplyInput}>Reply</CommentActionStyled>}
           </CommentActionsContainerStyled>
         </div>{' '}
         {totalLike > 0 && isShortComment && <>{likeContainer}</>}
