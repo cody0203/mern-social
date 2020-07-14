@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import { Dropdown, Menu } from "antd";
-import { get, includes } from "lodash";
-import { Link } from "react-router-dom";
-import { EllipsisOutlined, LikeFilled } from "@ant-design/icons";
-import CustomAvatar from "../common/components/CustomAvatar";
-import moment from "moment";
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { Dropdown, Menu } from 'antd';
+import { get, includes } from 'lodash';
+import { Link } from 'react-router-dom';
+import { EllipsisOutlined, LikeFilled } from '@ant-design/icons';
+import CustomAvatar from '../common/components/CustomAvatar';
+import moment from 'moment';
 
 const CommentItem = ({
   comment,
@@ -20,34 +20,34 @@ const CommentItem = ({
 }) => {
   const [isShortComment, setIsShortComment] = useState(true);
 
-  const posterId = get(comment, "owner._id");
-  const id = get(comment, "_id");
-  const posterName = get(comment, "owner.name");
-  const content = get(comment, "content");
-  const likes = get(comment, "likes");
-  const created = get(comment, "created");
-  const totalLike = get(likes, "length");
+  const posterId = get(comment, 'owner._id');
+  const id = get(comment, '_id');
+  const posterName = get(comment, 'owner.name');
+  const content = get(comment, 'content');
+  const likes = get(comment, 'likes');
+  const created = get(comment, 'created');
+  const totalLike = get(likes, 'length');
   const isLiked = includes(likes, userId);
 
   useEffect(() => {
-    if (get(content, "length") > 30) {
+    if (get(content, 'length') > 30) {
       setIsShortComment(false);
     }
   }, [content]);
 
   const menu = (
     <Menu onClick={menuClickHandler}>
-      <Menu.Item key="0">
+      <Menu.Item key='0'>
         <p>Edit</p>
       </Menu.Item>
-      <Menu.Item key="1">
+      <Menu.Item key='1'>
         <p>Delete</p>
       </Menu.Item>
     </Menu>
   );
 
   const likeContainer = (
-    <LikeContainerStyled className={`${!isShortComment && "long-comment"}`}>
+    <LikeContainerStyled className={`${!isShortComment && 'long-comment'}`}>
       <LikeIconStyled />
       <LikeCounterStyled>{totalLike}</LikeCounterStyled>
     </LikeContainerStyled>
@@ -57,7 +57,7 @@ const CommentItem = ({
     <CommentStyled $isReply={isReply}>
       <Link to={`/user/profile/${posterId}`}>
         <CustomAvatar
-          size={30}
+          size={!isReply ? 30 : 25}
           src={`http://localhost:8080/api/user/avatar/${posterId}?${new Date().getTime()}`}
         />
       </Link>
@@ -65,44 +65,33 @@ const CommentItem = ({
         <div>
           <ContentStyled>
             <Content>
-              <PosterNameStyled to={`/user/profile/${posterId}`}>
-                {posterName}
-              </PosterNameStyled>{" "}
-              {content}
-            </Content>{" "}
-            {totalLike > 0 && <>{likeContainer}</>}{" "}
+              <PosterNameStyled to={`/user/profile/${posterId}`}>{posterName}</PosterNameStyled> {content}
+            </Content>{' '}
+            {totalLike > 0 && <>{likeContainer}</>}{' '}
             <Dropdown
               visible={isDropdownVisible && currentDropdownId === id}
               overlay={menu}
-              trigger={["click"]}
+              trigger={['click']}
               onVisibleChange={changeDropdownVisibleHandler.bind(this, id)}
             >
-              <MoreIconStyled
-                $isVisible={isDropdownVisible}
-                className={`${!isShortComment ? "long-comment" : ""}`}
-              />
+              <MoreIconStyled $isVisible={isDropdownVisible} className={`${!isShortComment ? 'long-comment' : ''}`} />
             </Dropdown>
-          </ContentStyled>{" "}
+          </ContentStyled>{' '}
           <CommentActionsContainerStyled>
-            <LikeActionStyled
-              onClick={likeCommentHandler.bind(this, id)}
-              $isLiked={isLiked}
-            >
+            <LikeActionStyled onClick={likeCommentHandler.bind(this, id)} $isLiked={isLiked}>
               Like
             </LikeActionStyled>
             {!isReply && (
               <>
                 <span> · </span>
 
-                <CommentActionStyled onClick={showReplyInput}>
-                  Reply
-                </CommentActionStyled>
+                <CommentActionStyled onClick={showReplyInput}>Reply</CommentActionStyled>
               </>
             )}
             <span> · </span>
             <span>{moment(created).fromNow()}</span>
           </CommentActionsContainerStyled>
-        </div>{" "}
+        </div>{' '}
         {/* {totalLike > 0 && isShortComment && <>{likeContainer}</>} */}
       </ContentContainerStyled>
     </CommentStyled>
@@ -112,33 +101,33 @@ const CommentItem = ({
 const CommentStyled = styled.div`
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   width: fit-content;
   padding: 0 36px 16px 16px;
 
   &:first-child {
-    padding-top: ${({ $isReply }) => (!$isReply ? "16px" : 0)};
+    padding-top: ${({ $isReply }) => (!$isReply ? '16px' : 0)};
   }
 `;
 
 const CommentActionStyled = styled.span`
-  color: ${({ theme }) => get(theme, "colors.primaryDark")};
+  color: ${({ theme }) => get(theme, 'colors.primaryDark')};
   cursor: pointer;
 `;
 
 const LikeActionStyled = styled(CommentActionStyled)`
-  font-weight: ${({ $isLiked }) => ($isLiked ? "800" : "400")};
-  color: ${({ $isLiked, theme }) => $isLiked && get(theme, "colors.primary")};
+  font-weight: ${({ $isLiked }) => ($isLiked ? '800' : '400')};
+  color: ${({ $isLiked, theme }) => $isLiked && get(theme, 'colors.primary')};
 `;
 
 const ContentContainerStyled = styled.div`
   display: flex;
   align-items: baseline;
-  margin-left: 16px;
+  margin-left: 8px;
 `;
 
 const PosterNameStyled = styled(Link)`
-  color: ${({ theme }) => get(theme, "colors.primary")};
+  color: ${({ theme }) => get(theme, 'colors.primary')};
   font-weight: 500;
 `;
 
@@ -149,7 +138,7 @@ const ContentStyled = styled.div`
 `;
 
 const Content = styled.p`
-  background-color: ${({ theme }) => get(theme, "colors.background")};
+  background-color: ${({ theme }) => get(theme, 'colors.background')};
   padding: 6px 12px;
   border-radius: 18px;
 `;
@@ -161,7 +150,7 @@ const MoreIconStyled = styled(EllipsisOutlined)`
     top: 50%;
     transform: translateY(-50%);
   }
-  display: ${({ $isVisible }) => ($isVisible ? "block" : "none")};
+  display: ${({ $isVisible }) => ($isVisible ? 'block' : 'none')};
   font-size: 18px;
   cursor: pointer;
   margin-left: 8px;
@@ -192,7 +181,7 @@ const LikeContainerStyled = styled.div`
 `;
 
 const LikeIconStyled = styled(LikeFilled)`
-  background-color: ${({ theme }) => get(theme, "colors.primary")};
+  background-color: ${({ theme }) => get(theme, 'colors.primary')};
   color: white;
   border-radius: 50%;
   padding: 2px;
