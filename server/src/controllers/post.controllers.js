@@ -1,68 +1,93 @@
-import { get, extend, uniq, map, range } from 'lodash';
-import Post from '../models/post.model';
-import User from '../models/user.model';
-import Comment from '../models/comment.model';
-import errorHandler from '../helpers/dbErrorHandler';
-import { postPopulateQuery } from '../helpers/populateQuery';
+import { get, extend, uniq, map, range } from "lodash";
+import Post from "../models/post.model";
+import User from "../models/user.model";
+import Comment from "../models/comment.model";
+import errorHandler from "../helpers/dbErrorHandler";
+import { postPopulateQuery } from "../helpers/populateQuery";
 
 const queryPost = async ({ query, page, limit }) => {
-  const posts = await Post.find(query)
-    .sort({ created: 'desc' })
-    // .skip((page - 1) * limit)
-    .limit(1000)
+  // const posts = await Post.find(query)
+  //   .sort({ created: "desc" })
+  //   .skip((page - 1) * limit)
+  //   .limit(limit);
+  // const ownerPostIds = posts.map((post) => post.owner);
+  // const postId = posts.map((post) => post._id);
+  // const allComments = await Comment.find({ postId });
+  // const ownerCommentIds = allComments
+  //   .map((comment) => comment.owner)
+  //   .concat(ownerPostIds);
+  // const ownerIds = await User.find({ _id: { $in: ownerCommentIds } }).select(
+  //   "name"
+  // );
+  // const mappingData = map(posts, (post) => {
+  //   const ownerId = get(post, "owner");
+  //   const postId = get(post, "_id");
+  //   const owner = ownerIds.find(
+  //     (user) => user._id.toString() === ownerId.toString()
+  //   );
+  //   post.owner = owner;
+  //   const postComments = allComments.filter(
+  //     (comment) => get(comment, "postId").toString() === postId.toString()
+  //   );
+  //   const transformedComments = postComments.map((comment) => {
+  //     const id = get(comment, "_id");
+  //     const ownerId = get(comment, "owner");
+  //     const replyCommentId = get(comment, "commentId");
+  //     const owner = ownerIds.find(
+  //       (user) => user._id.toString() === ownerId.toString()
+  //     );
+  //     comment.owner = owner;
+  //     if (!replyCommentId) {
+  //       comment.replies = postComments.filter(
+  //         (comment) =>
+  //           get(comment, "commentId") &&
+  //           get(comment, "commentId").toString() === id.toString()
+  //       );
+  //     }
+  //     return comment;
+  //   });
+  //   post.comments = transformedComments.filter(
+  //     (comment) => !get(comment, "commentId")
+  //   );
+  //   return post;
+  // });
+  // const countDocs = await Post.countDocuments(query);
+  // const meta = {
+  //   total: countDocs,
+  //   current_page: page,
+  //   per_page: limit,
+  //   page_size: posts.length,
+  //   total_page: Math.ceil(countDocs / limit),
+  // };
+  // return { data: mappingData, meta };
+
+  const data = await Post.find(query)
+    .sort({ created: "desc" })
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .populate(postPopulateQuery)
     .exec();
-
-  const ownerPostIds = posts.map((post) => post.owner);
-  const postId = posts.map((post) => post._id);
-  const allComments = await Comment.find({ postId });
-  const ownerCommentIds = allComments.map((comment) => comment.owner).concat(ownerPostIds);
-  const ownerIds = await User.find({ _id: { $in: ownerCommentIds } }).select('name');
-
-  const mappingData = map(posts, (post) => {
-    const ownerId = get(post, 'owner');
-    const postId = get(post, '_id');
-    const owner = ownerIds.find((user) => user._id.toString() === ownerId.toString());
-    post.owner = owner;
-
-    const postComments = allComments.filter((comment) => get(comment, 'postId').toString() === postId.toString());
-
-    const transformedComments = postComments.map((comment) => {
-      const id = get(comment, '_id');
-      const ownerId = get(comment, 'owner');
-      const replyCommentId = get(comment, 'commentId');
-
-      const owner = ownerIds.find((user) => user._id.toString() === ownerId.toString());
-      comment.owner = owner;
-      if (!replyCommentId) {
-        comment.replies = postComments;
-      }
-      return comment;
-    });
-
-    post.comments = transformedComments.filter((comment) => !get(comment, 'commentId'));
-    return post;
-  });
 
   const countDocs = await Post.countDocuments(query);
 
   const meta = {
-    // total: countDocs,
-    // current_page: page,
-    // per_page: limit,
-    // page_size: data.length,
-    // total_page: Math.ceil(countDocs / limit),
+    total: countDocs,
+    current_page: page,
+    per_page: limit,
+    page_size: data.length,
+    total_page: Math.ceil(countDocs / limit),
   };
-  return { data: mappingData, meta };
+  return { data, meta };
 };
 
 const getPosts = async (req, res, next) => {
   try {
-    const page = parseInt(get(req, 'query.page')) || 1;
-    const limit = parseInt(get(req, 'query.limit')) || 10;
+    const page = parseInt(get(req, "query.page")) || 1;
+    const limit = parseInt(get(req, "query.limit")) || 10;
 
-    const userId = get(req, 'auth._id');
+    const userId = get(req, "auth._id");
     const user = await User.findById(userId);
-    const following = get(user, 'following');
+    const following = get(user, "following");
     following.push(userId);
 
     const query = {
@@ -81,9 +106,9 @@ const getPosts = async (req, res, next) => {
 
 const getPost = async (req, res, next) => {
   try {
-    const userId = get(req, 'profile._id');
-    const page = parseInt(get(req, 'query.page')) || 1;
-    const limit = parseInt(get(req, 'query.limit')) || 10;
+    const userId = get(req, "profile._id");
+    const page = parseInt(get(req, "query.page")) || 1;
+    const limit = parseInt(get(req, "query.limit")) || 10;
 
     const query = { owner: userId };
     const { data, meta } = await queryPost({ query, page, limit });
@@ -97,13 +122,15 @@ const getPost = async (req, res, next) => {
 
 const createPost = async (req, res, next) => {
   try {
-    const owner = get(req, 'auth._id');
+    const owner = get(req, "auth._id");
     const post = new Post({ ...req.body, owner });
 
     const createdPost = await post.save();
-    await createdPost.populate('owner', 'name').execPopulate();
+    await createdPost.populate("owner", "name").execPopulate();
 
-    return res.status(200).json({ message: 'Successfully created post', data: createdPost });
+    return res
+      .status(200)
+      .json({ message: "Successfully created post", data: createdPost });
   } catch (err) {
     console.log(err);
     return res.status(404).json({ error: errorHandler.getErrorMessage(err) });
@@ -117,7 +144,9 @@ const updatePost = async (req, res, next) => {
 
     await post.save();
 
-    return res.status(200).json({ message: 'Update post successfully', data: post });
+    return res
+      .status(200)
+      .json({ message: "Update post successfully", data: post });
   } catch (err) {
     return res.status(404).json({ error: errorHandler.getErrorMessage(err) });
   }
@@ -126,11 +155,11 @@ const updatePost = async (req, res, next) => {
 const deletePost = async (req, res, next) => {
   try {
     const post = req.post;
-    const postId = get(post, '_id');
+    const postId = get(post, "_id");
 
     await Post.deleteOne({ _id: postId });
     await Comment.deleteMany({ postId });
-    return res.status(200).json({ message: 'Deleted', data: post });
+    return res.status(200).json({ message: "Deleted", data: post });
   } catch (err) {
     return res.status(404).json({ error: errorHandler.getErrorMessage(err) });
   }
@@ -138,11 +167,13 @@ const deletePost = async (req, res, next) => {
 
 const likePost = async (req, res, next) => {
   try {
-    const userId = get(req, 'auth._id');
-    const post = get(req, 'post');
+    const userId = get(req, "auth._id");
+    const post = get(req, "post");
     let likedBy = [...post.likes];
 
-    const isLiked = likedBy.find((like) => like.toString() === userId.toString());
+    const isLiked = likedBy.find(
+      (like) => like.toString() === userId.toString()
+    );
     if (!isLiked) {
       likedBy.push(userId);
     }
@@ -154,7 +185,7 @@ const likePost = async (req, res, next) => {
     post.likes = uniq(likedBy);
 
     await post.save();
-    await post.populate('comments.poster', 'name').execPopulate();
+    await post.populate("comments.poster", "name").execPopulate();
 
     return res.status(200).json({ data: post });
   } catch (err) {
@@ -166,12 +197,12 @@ const genPost = async () => {
   const posts = range(1000).forEach(async (index) => {
     const post = new Post({
       content: `Post ${index}`,
-      owner: '5efb4d02db01881ff82547d2',
+      owner: "5efb4d02db01881ff82547d2",
       comments: [
-        '5f0aa2402f98050a7de25764',
-        '5f0c7317068ff80683d913a7',
-        '5f0d7d10c2ca758c136c964f',
-        '5f0d7d17c2ca758c136c9651',
+        "5f0aa2402f98050a7de25764",
+        "5f0c7317068ff80683d913a7",
+        "5f0d7d10c2ca758c136c964f",
+        "5f0d7d17c2ca758c136c9651",
       ],
       public: true,
     });
@@ -182,10 +213,13 @@ const genPost = async () => {
 };
 
 const isOwner = (req, res, next) => {
-  const owner = req.post && req.auth && req.post.owner._id.toString() === req.auth._id.toString();
+  const owner =
+    req.post &&
+    req.auth &&
+    req.post.owner._id.toString() === req.auth._id.toString();
 
   if (!owner) {
-    return res.status(403).json({ error: 'User is not authorized' });
+    return res.status(403).json({ error: "User is not authorized" });
   }
 
   next();
@@ -196,7 +230,7 @@ const postById = async (req, res, next, id) => {
     const post = await Post.findById(id).populate(postPopulateQuery).exec();
 
     if (!post) {
-      return res.status(400).json({ error: 'Post not found' });
+      return res.status(400).json({ error: "Post not found" });
     }
 
     req.post = post;
