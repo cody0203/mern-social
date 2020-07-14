@@ -4,6 +4,7 @@ import { get, includes } from "lodash";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import { Tooltip, Input, Dropdown, Menu } from "antd";
+import shortid from "shortid";
 import {
   HeartFilled,
   HeartOutlined,
@@ -128,6 +129,20 @@ const Post = ({ post }) => {
   const commentHandler = (e) => {
     setPostCommenting(postId);
     commentInputRef.current.blur();
+    dispatch(
+      actions.updatePostListData({
+        ...post,
+        comments: [
+          ...post.comments,
+          {
+            _id: shortid.generate(),
+            content: commentValue,
+            owner: { _id: id, name },
+          },
+        ],
+      })
+    );
+
     dispatch(
       commentActions.createCommentStart({
         id: postId,

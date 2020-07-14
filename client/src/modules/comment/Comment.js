@@ -1,40 +1,51 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { get, isEmpty } from 'lodash';
-import styled from 'styled-components';
-import { Dropdown, Menu } from 'antd';
-import { Link } from 'react-router-dom';
-import { EllipsisOutlined, LikeFilled } from '@ant-design/icons';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useRef, useEffect } from "react";
+import { get, isEmpty, remove } from "lodash";
+import styled from "styled-components";
+import { Dropdown, Menu } from "antd";
+import { Link } from "react-router-dom";
+import { EllipsisOutlined, LikeFilled } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import shortid from "shortid";
 
-import CommentField from './CommentField';
-import CommentItem from './CommentItem';
+import CommentField from "./CommentField";
+import CommentItem from "./CommentItem";
 
-import * as actions from '../../system/store/comment/comment.actions';
+import * as actions from "../../system/store/comment/comment.actions";
+import * as postActions from "../../system/store/post/post.actions";
 
 const Comment = ({ comment }) => {
   const commentInputRef = useRef({});
   const dispatch = useDispatch();
-  const { userInfo } = useSelector((store) => get(store, 'authReducer'));
-  const { createReplyLoading } = useSelector((store) => get(store, 'commentReducer'));
-  const userId = get(userInfo, '_id');
-  const posterId = get(comment, 'owner._id');
-  const id = get(comment, '_id');
-  const posterName = get(comment, 'owner.name');
-  const content = get(comment, 'content');
-  const likes = get(comment, 'likes');
-  const replies = get(comment, 'replies');
-  const totalLike = get(likes, 'length');
+  const { userInfo } = useSelector((store) => get(store, "authReducer"));
+  const { createReplyLoading } = useSelector((store) =>
+    get(store, "commentReducer")
+  );
+  const { postListData } = useSelector((store) =>
+    get(store, "postReducer.postList")
+  );
+
+  const userId = get(userInfo, "_id");
+  const userName = get(userInfo, "name");
+  const posterId = get(comment, "owner._id");
+  const postId = get(comment, "postId");
+  const id = get(comment, "_id");
+  const posterName = get(comment, "owner.name");
+  const content = get(comment, "content");
+  const likes = get(comment, "likes");
+  const replies = get(comment, "replies");
+  const totalLike = get(likes, "length");
+  const currentPost = postListData.find((post) => get(post, "_id") === postId);
 
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [isReplyInputVisible, setIsReplyInputVisible] = useState(false);
   const [currentReplyId, setCurrentReplyId] = useState(null);
   const [currentDropdownId, setCurrentDropdownId] = useState(null);
   const [commentReplying, setCommentReplying] = useState(null);
-  const [replyValue, setReplyValue] = useState('');
+  const [replyValue, setReplyValue] = useState("");
 
   useEffect(() => {
     if (!createReplyLoading) {
-      setReplyValue('');
+      setReplyValue("");
     }
   }, [createReplyLoading]);
 
@@ -48,6 +59,27 @@ const Comment = ({ comment }) => {
   };
 
   const likeCommentHandler = (id) => {
+    dispatch(
+      postActions.updatePostListData({
+        ...currentPost,
+        comments: currentPost.comments.map((existComment) => {
+          const existCommentId = get(existComment, "_id");
+
+          if (existCommentId === id) {
+            const currentLikes = get(existComment, "likes");
+            console.log(currentLikes);
+            return {
+              ...existComment,
+              likes: !currentLikes.includes(userId)
+                ? [...currentLikes, userId]
+                : remove(currentLikes, userId),
+            };
+          }
+
+          return existComment;
+        }),
+      })
+    );
     dispatch(actions.likeCommentStart(id));
   };
 
@@ -62,14 +94,43 @@ const Comment = ({ comment }) => {
   };
 
   const changeReplyValueHandler = (e) => {
-    const value = get(e, 'target.value');
+    const value = get(e, "target.value");
     setReplyValue(value);
   };
 
   const sendReplyHandler = () => {
     setCommentReplying(id);
     commentInputRef.current.blur();
-    dispatch(actions.createReplyStart({ id, params: { content: replyValue } }));
+    dispatch(
+      postActions.updatePostListData({
+        ...currentPost,
+        comments: [...currentPost.comments].map((existComment) => {
+          const existCommentId = get(existComment, "_id");
+          if (existCommentId === id) {
+            return {
+              ...existComment,
+              replies: [
+                ...existComment.replies,
+                {
+                  _id: shortid.generate(),
+                  content: replyValue,
+                  owner: { _id: userId, name: userName },
+                },
+              ],
+            };
+          }
+
+          return existComment;
+        }),
+      })
+    );
+
+    dispatch(
+      actions.createReplyStart({
+        id,
+        params: { content: replyValue },
+      })
+    );
   };
 
   return (
@@ -117,7 +178,7 @@ const Comment = ({ comment }) => {
         {!isEmpty(replies) &&
           replies.map((reply) => (
             <CommentItem
-              key={get(reply, '_id')}
+              key={get(reply, "_id")}
               comment={reply}
               likeCommentHandler={likeCommentHandler}
               showReplyInput={showReplyInput}
