@@ -33,7 +33,7 @@ const CommentField = React.forwardRef((props, ref) => {
           value={value}
           onPressEnter={onPressEnter}
           onChange={onChange}
-          disabled={isCommenting && loading}
+          // disabled={isCommenting && loading}
           suffix={isCommenting && loading && <LoadingOutlined />}
         />
       </CommentInputContainer>
