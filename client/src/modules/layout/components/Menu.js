@@ -1,34 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useHistory } from 'react-router-dom';
-import get from 'lodash/get';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import { Link, useLocation, useHistory } from "react-router-dom";
+import get from "lodash/get";
+import { useSelector } from "react-redux";
 
-import auth from '../../../system/auth/auth-helper';
-import Styled from './Menu.styles';
+import auth from "../../../system/auth/auth-helper";
+import Styled from "./Menu.styles";
 
-const CustomMenu = ({ openMenuDrawerHandler, isAuthenticated, userId, signOutHandler }) => {
+const CustomMenu = ({
+  openMenuDrawerHandler,
+  isAuthenticated,
+  userId,
+  signOutHandler,
+}) => {
   const location = useLocation();
 
   const [currentPage, setCurrentPage] = useState(null);
 
   useEffect(() => {
-    setCurrentPage(get(location, 'pathname'));
+    setCurrentPage(get(location, "pathname"));
   }, [location]);
 
   return (
     <Styled.HeaderStyled>
-      <Styled.LogoStyled to='/'>MERN Skeleton</Styled.LogoStyled>
-      <Styled.MenuStyled mode='horizontal' selectedKeys={[currentPage]}>
-        <Styled.MenuItemStyled key='/'>
-          <Link to='/'>Home</Link>
+      <Styled.LogoStyled to="/">Quackbook</Styled.LogoStyled>
+      <Styled.MenuStyled mode="horizontal" selectedKeys={[currentPage]}>
+        <Styled.MenuItemStyled key="/">
+          <Link to="/">Home</Link>
         </Styled.MenuItemStyled>
 
         {!isAuthenticated && [
-          <Styled.MenuItemStyled key='/sign-up'>
-            <Link to='/sign-up'>Sign Up</Link>
+          <Styled.MenuItemStyled key="/sign-up">
+            <Link to="/sign-up">Sign Up</Link>
           </Styled.MenuItemStyled>,
-          <Styled.MenuItemStyled key='/sign-in'>
-            <Link to='/sign-in'>Sign In</Link>
+          <Styled.MenuItemStyled key="/sign-in">
+            <Link to="/sign-in">Sign In</Link>
           </Styled.MenuItemStyled>,
         ]}
 
@@ -36,7 +41,7 @@ const CustomMenu = ({ openMenuDrawerHandler, isAuthenticated, userId, signOutHan
           <Styled.MenuItemStyled key={`/user/profile/${userId}`}>
             <Link to={`/user/profile/${userId}`}>My Profile</Link>
           </Styled.MenuItemStyled>,
-          <Styled.MenuItemStyled onClick={signOutHandler} key='sign-out'>
+          <Styled.MenuItemStyled onClick={signOutHandler} key="sign-out">
             <Styled.SignOutButtonStyled>Sign Out</Styled.SignOutButtonStyled>
           </Styled.MenuItemStyled>,
         ]}

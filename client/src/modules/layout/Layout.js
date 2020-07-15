@@ -40,7 +40,7 @@ const CustomLayout = ({ children }) => {
       </Styled.ContentStyled>
 
       <Drawer
-        title='MERN Skeleton'
+        title='Quackbook'
         placement='left'
         closable={false}
         onClose={closeMenuDrawerHandler}
