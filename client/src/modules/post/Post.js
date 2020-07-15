@@ -128,6 +128,7 @@ const Post = ({ post }) => {
           ...post.comments,
           {
             _id: shortid.generate(),
+            isFake: true,
             content: commentValue,
             owner: { _id: id, name },
           },

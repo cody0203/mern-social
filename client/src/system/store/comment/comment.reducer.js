@@ -1,9 +1,11 @@
-import * as types from "./comment.types";
+import * as types from './comment.types';
 
 const INITIAL_STATE = {
   createCommentLoading: false,
   likeCommentLoading: false,
+  deleteCommentLoading: false,
   createReplyLoading: false,
+  deleteReplyLoading: false,
   error: null,
 };
 
@@ -63,6 +65,44 @@ const commentReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         createReplyLoading: false,
+        error: action.payload,
+      };
+
+    case types.DELETE_COMMENT.START:
+      return {
+        ...state,
+        deleteCommentLoading: true,
+      };
+
+    case types.DELETE_COMMENT.SUCCESS:
+      return {
+        ...state,
+        deleteCommentLoading: false,
+      };
+
+    case types.DELETE_COMMENT.START:
+      return {
+        ...state,
+        deleteCommentLoading: false,
+        error: action.payload,
+      };
+
+    case types.DELETE_REPLY.START:
+      return {
+        ...state,
+        deleteReplyLoading: true,
+      };
+
+    case types.DELETE_REPLY.SUCCESS:
+      return {
+        ...state,
+        deleteReplyLoading: false,
+      };
+
+    case types.DELETE_REPLY.FAILURE:
+      return {
+        ...state,
+        deleteReplyLoading: false,
         error: action.payload,
       };
 

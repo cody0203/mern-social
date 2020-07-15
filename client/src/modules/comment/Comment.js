@@ -100,7 +100,6 @@ const Comment = ({ comment }) => {
     };
     dispatch(postActions.updatePostListData(newPostData));
 
-    console.log(newPostData);
     dispatch(actions.likeCommentStart(id));
   };
 
@@ -131,10 +130,12 @@ const Comment = ({ comment }) => {
           if (existCommentId === id) {
             return {
               ...existComment,
+
               replies: [
                 ...existComment.replies,
                 {
                   _id: shortid.generate(),
+                  isFake: true,
                   content: replyValue,
                   owner: { _id: userId, name: userName },
                 },

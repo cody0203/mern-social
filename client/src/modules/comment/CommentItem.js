@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Dropdown, Menu } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
 import { get, includes } from 'lodash';
 import { Link } from 'react-router-dom';
 import { EllipsisOutlined, LikeFilled } from '@ant-design/icons';
 import CustomAvatar from '../common/components/CustomAvatar';
 import moment from 'moment';
+
+import CustomDeleteConfirmModal from '../common/components/CustomDeleteConfirmModal';
+
+import * as actions from '../../system/store/comment/comment.actions';
 
 const CommentItem = ({
   comment,
@@ -18,10 +23,14 @@ const CommentItem = ({
   isReply,
   currentDropdownId,
 }) => {
+  const dispatch = useDispatch();
   const [isShortComment, setIsShortComment] = useState(true);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
+  const { deleteCommentLoading, deleteReplyLoading } = useSelector((store) => get(store, 'commentReducer'));
   const posterId = get(comment, 'owner._id');
   const id = get(comment, '_id');
+  const isFake = get(comment, 'isFake');
   const posterName = get(comment, 'owner.name');
   const content = get(comment, 'content');
   const likes = get(comment, 'likes');
@@ -35,12 +44,29 @@ const CommentItem = ({
     }
   }, [content]);
 
+  const onDeleteModal = () => {
+    setIsDeleteModalVisible(true);
+  };
+
+  const closeDeleteModal = () => {
+    setIsDeleteModalVisible(false);
+  };
+
+  const deleteCommentHandler = () => {
+    if (!isReply) {
+      dispatch(actions.deleteCommentStart(id));
+      return;
+    }
+
+    dispatch(actions.deleteReplyStart(id));
+  };
+
   const menu = (
     <Menu onClick={menuClickHandler}>
       <Menu.Item key='0'>
         <p>Edit</p>
       </Menu.Item>
-      <Menu.Item key='1'>
+      <Menu.Item key='1' onClick={onDeleteModal}>
         <p>Delete</p>
       </Menu.Item>
     </Menu>
@@ -68,32 +94,48 @@ const CommentItem = ({
               <PosterNameStyled to={`/user/profile/${posterId}`}>{posterName}</PosterNameStyled> {content}
             </Content>{' '}
             {totalLike > 0 && <>{likeContainer}</>}{' '}
-            <Dropdown
-              visible={isDropdownVisible && currentDropdownId === id}
-              overlay={menu}
-              trigger={['click']}
-              onVisibleChange={changeDropdownVisibleHandler.bind(this, id)}
-            >
-              <MoreIconStyled $isVisible={isDropdownVisible} className={`${!isShortComment ? 'long-comment' : ''}`} />
-            </Dropdown>
+            {!isFake && (
+              <Dropdown
+                visible={isDropdownVisible && currentDropdownId === id}
+                overlay={menu}
+                trigger={['click']}
+                onVisibleChange={changeDropdownVisibleHandler.bind(this, id)}
+              >
+                <MoreIconStyled $isVisible={isDropdownVisible} className={`${!isShortComment ? 'long-comment' : ''}`} />
+              </Dropdown>
+            )}
           </ContentStyled>{' '}
           <CommentActionsContainerStyled>
-            <LikeActionStyled onClick={likeCommentHandler.bind(this, id)} $isLiked={isLiked}>
-              Like
-            </LikeActionStyled>
-            {!isReply && (
+            {!isFake && (
               <>
-                <span> · </span>
+                <LikeActionStyled onClick={likeCommentHandler.bind(this, id)} $isLiked={isLiked}>
+                  Like
+                </LikeActionStyled>
+                {!isReply && (
+                  <>
+                    <span> · </span>
 
-                <CommentActionStyled onClick={showReplyInput}>Reply</CommentActionStyled>
+                    <CommentActionStyled onClick={showReplyInput}>Reply</CommentActionStyled>
+                  </>
+                )}
+                <span> · </span>
               </>
             )}
-            <span> · </span>
+
             <span>{moment(created).fromNow()}</span>
           </CommentActionsContainerStyled>
         </div>{' '}
         {/* {totalLike > 0 && isShortComment && <>{likeContainer}</>} */}
       </ContentContainerStyled>
+
+      <CustomDeleteConfirmModal
+        visible={isDeleteModalVisible}
+        onCancel={closeDeleteModal}
+        title='Delete comment'
+        desc='Confirm to delete this comment?'
+        onOk={deleteCommentHandler}
+        loading={!isReply ? deleteCommentLoading : deleteReplyLoading}
+      />
     </CommentStyled>
   );
 };
