@@ -41,9 +41,11 @@ const CommentItem = ({
   const { deleteCommentLoading, deleteReplyLoading } = useSelector((store) =>
     get(store, "commentReducer")
   );
+
   const posterId = get(comment, "owner._id");
   const id = get(comment, "_id");
   const isFake = get(comment, "isFake");
+
   const posterName = get(comment, "owner.name");
   const content = get(comment, "content");
   const likes = get(comment, "likes");
@@ -51,6 +53,7 @@ const CommentItem = ({
   const totalLike = get(likes, "length");
   const isLiked = includes(likes, userId);
 
+  console.log();
   useEffect(() => {
     setEditingValue(content);
   }, [content]);
@@ -168,7 +171,7 @@ const CommentItem = ({
                 {editingValue}
               </Content>{" "}
               {totalLike > 0 && <>{likeContainer}</>}{" "}
-              {!isFake && (
+              {!isFake && userId === posterId && (
                 <Dropdown
                   visible={isDropdownVisible && currentDropdownId === id}
                   overlay={menu}
