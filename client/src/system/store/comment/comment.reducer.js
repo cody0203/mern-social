@@ -1,4 +1,4 @@
-import * as types from './comment.types';
+import * as types from "./comment.types";
 
 const INITIAL_STATE = {
   createCommentLoading: false,
