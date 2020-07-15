@@ -76,6 +76,34 @@ const Comment = ({ comment }) => {
     dispatch(actions.likeCommentStart(id));
   };
 
+  const likeReplyHandler = (id) => {
+    const newPostData = {
+      ...currentPost,
+      comments: currentPost.comments.map((existComment) => {
+        const replies = existComment.replies.map((reply) => {
+          const existReplyId = get(reply, '_id');
+
+          if (existReplyId === id) {
+            const currentLikes = get(reply, 'likes');
+
+            return {
+              ...reply,
+              likes: !currentLikes.includes(userId) ? [...currentLikes, userId] : remove(currentLikes, userId),
+            };
+          }
+
+          return reply;
+        });
+
+        return { ...existComment, replies };
+      }),
+    };
+    dispatch(postActions.updatePostListData(newPostData));
+
+    console.log(newPostData);
+    dispatch(actions.likeCommentStart(id));
+  };
+
   const showReplyInput = () => {
     if (isReplyInputVisible && currentReplyId === id) {
       commentInputRef.current.focus();
@@ -174,7 +202,7 @@ const Comment = ({ comment }) => {
             <CommentItem
               key={get(reply, '_id')}
               comment={reply}
-              likeCommentHandler={likeCommentHandler}
+              likeCommentHandler={likeReplyHandler}
               showReplyInput={showReplyInput}
               isDropdownVisible={isDropdownVisible}
               userId={userId}
