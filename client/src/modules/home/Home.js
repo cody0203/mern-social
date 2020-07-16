@@ -7,7 +7,7 @@ import Styled from './Home.styles';
 const Home = () => {
   return (
     <Styled.HomeBoxStyled>
-      <CustomHeader>Welcome to MERN Skeleton home page</CustomHeader>
+      <CustomHeader>Welcome to Quackbook home page</CustomHeader>
       <LazyLoad height={450}>
         <Styled.HomeImageStyled src='https://source.unsplash.com/collection/398597/450x450' />
       </LazyLoad>

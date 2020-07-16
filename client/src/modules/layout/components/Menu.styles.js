@@ -12,7 +12,7 @@ const HeaderStyled = styled(Header)`
   align-items: center;
   background-color: ${({ theme }) => get(theme, 'colors.primary')};
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     padding: 0 16px;
   }
 `;
@@ -50,7 +50,7 @@ const MenuStyled = styled(Menu)`
     background-color: hsla(0, 0%, 100%, 0.1);
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     display: none;
   }
 `;
@@ -68,7 +68,7 @@ const MobileMenuIconStyled = styled(MenuOutlined)`
   border-radius: 4px;
   cursor: pointer;
 
-  @media (min-width: 768px) {
+  @media (min-width: 769px) {
     display: none;
   }
 `;
