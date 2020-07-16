@@ -15,6 +15,7 @@ const LazyLoadImageStyled = styled(LazyLoadImage)`
   width: ${({ size }) => `${size}px`};
   height: ${({ size }) => `${size}px`};
   border-radius: 50%;
+  border: 1px solid ${({ theme }) => get(theme, 'colors.lineColor')};
 `;
 
 export default CustomAvatar;

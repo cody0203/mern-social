@@ -1,10 +1,13 @@
 import fs from 'fs';
+import path from 'path';
 
 import extend from 'lodash/extend';
-import get from 'lodash/get';
+import { get, isEmpty } from 'lodash';
 import formidable from 'formidable';
 import User from '../models/user.model';
 import errorHandler from '../helpers/dbErrorHandler';
+
+const CURRENT_WORKING_DIR = process.cwd();
 
 const list = async (req, res, next) => {
   try {
@@ -79,12 +82,13 @@ const avatar = async (req, res, next) => {
   const avatarData = get(avatarObj, 'data');
   const avatarContentType = get(avatarObj, 'contentType');
 
-  if (avatarData) {
+  if (!isEmpty(avatarData)) {
     res.set('Content-Type', avatarContentType);
     return res.send(avatarData);
   }
 
-  return res.send({});
+  res.set('Content-Type', 'image/png');
+  return res.sendFile(path.join(CURRENT_WORKING_DIR, '/src/assets/images/user-default.png'));
 };
 
 const addFollowing = async (req, res, next) => {

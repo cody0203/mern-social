@@ -215,6 +215,7 @@ const Post = ({ post }) => {
           ref={commentInputRef}
           value={commentValue}
           ownerId={ownerId}
+          userId={id}
           onPressEnter={commentHandler}
           onChange={onChangeCommentHandler}
           currentId={postCommenting}

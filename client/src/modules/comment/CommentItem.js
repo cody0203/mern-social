@@ -141,7 +141,8 @@ const CommentItem = ({
 
   const editCommentHandler = () => {
     dispatch(actions.editCommentStart({ id, params: { content: editingValue } }));
-    closeInlineCommentFieldHandler();
+    setIsEditCommentInputVisible(false);
+    mouseOutCancelAnchorHandler();
   };
 
   return (
