@@ -1,13 +1,11 @@
 import React from 'react';
 import { get } from 'lodash';
 import styled from 'styled-components';
-import { Avatar } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-import 'react-lazy-load-image-component/src/effects/blur.css';
+import 'react-lazy-load-image-component/src/effects/opacity.css';
 
 const CustomAvatar = ({ src, size }) => {
-  return <LazyLoadImageStyled src={src} size={size} />;
+  return <LazyLoadImageStyled src={src} size={size} effect='opacity' />;
 };
 
 const LazyLoadImageStyled = styled(LazyLoadImage)`
