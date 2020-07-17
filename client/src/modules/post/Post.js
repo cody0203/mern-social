@@ -5,6 +5,7 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Tooltip, Input, Dropdown, Menu } from 'antd';
 import shortid from 'shortid';
+
 import {
   HeartFilled,
   HeartOutlined,
@@ -299,8 +300,9 @@ const ContentStyled = styled.div`
 `;
 
 const ActionContainerStyled = styled.div`
-  padding: 12px 16px;
   display: flex;
+  padding: 12px 16px;
+  margin-bottom: 16px;
 `;
 
 const ActionIconContainer = styled.div`

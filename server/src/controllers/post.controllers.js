@@ -1,4 +1,5 @@
 import { get, extend, uniq, map, range } from 'lodash';
+
 import Post from '../models/post.model';
 import User from '../models/user.model';
 import Comment from '../models/comment.model';
@@ -103,6 +104,7 @@ const createPost = async (req, res, next) => {
     const post = new Post({ ...req.body, owner });
 
     const createdPost = await post.save();
+
     await createdPost.populate('owner', 'name').execPopulate();
 
     return res.status(200).json({ message: 'Successfully created post', data: createdPost });

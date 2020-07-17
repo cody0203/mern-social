@@ -176,23 +176,20 @@ const CommentItem = ({
               )}
             </ContentStyled>{' '}
             <CommentActionsContainerStyled>
+              {isFake && <span>Posting...</span>}
               {!isFake && (
                 <>
                   <LikeActionStyled onClick={likeCommentHandler.bind(this, id)} $isLiked={isLiked}>
                     Like
                   </LikeActionStyled>
-                  {!isReply && (
-                    <>
-                      <span> · </span>
-
-                      <CommentActionStyled onClick={showReplyInput}>Reply</CommentActionStyled>
-                    </>
-                  )}
                   <span> · </span>
+
+                  <CommentActionStyled onClick={showReplyInput}>Reply</CommentActionStyled>
+                  <span> · </span>
+
+                  <span>{moment(created).fromNow()}</span>
                 </>
               )}
-
-              <span>{moment(created).fromNow()}</span>
             </CommentActionsContainerStyled>
           </div>{' '}
           {/* {totalLike > 0 && isShortComment && <>{likeContainer}</>} */}
@@ -246,10 +243,6 @@ const CommentStyled = styled.div`
   display: flex;
   align-items: flex-start;
   padding: 0 36px 16px 16px;
-
-  &:first-child {
-    padding-top: ${({ $isReply }) => (!$isReply ? '16px' : 0)};
-  }
 `;
 
 const CommentActionStyled = styled.span`
