@@ -30,6 +30,11 @@ const MainRouter = () => {
       const following = get(userInfo, 'following');
       const userId = get(userInfo, '_id');
       socket.emit('join-room', { userId });
+
+      socket.on('connect', () => {
+        console.log('On Connect');
+        socket.emit('join-room', { userId });
+      });
     }
   }, [userInfo]);
 

@@ -31,7 +31,7 @@ const server = app.listen(config.port, (err) => {
   console.log('Server started on port %s.', config.port);
 });
 
-const socketIo = io.init(server);
+const socketIo = io.init(server, { pingTimeout: 7000, pingInterval: 3000 });
 
 socketIo.on('connection', async (socket) => {
   console.log('Client connected');
