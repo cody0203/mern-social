@@ -1,6 +1,7 @@
 import openSocket from 'socket.io-client';
+import config from '../config/config';
 
-const socket = openSocket('http://localhost:8080');
+const socket = openSocket(config.server);
 
 socket.on('disconnect', (reason) => {
   console.log('disconnect', reason);

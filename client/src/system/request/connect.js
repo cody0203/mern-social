@@ -1,11 +1,7 @@
 import requestFactory, { HTTP_STATUS } from './request';
+import config from '../../config/config';
 
-const apiUrl =
-  !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
-    ? 'http://localhost:8080/'
-    : 'https://evening-brook-56461.herokuapp.com';
-
-const request = requestFactory(apiUrl, {
+const request = requestFactory(config.server, {
   commonHeaders: { Accept: 'application/json' },
 
   interReq: async (config) => {
