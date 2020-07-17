@@ -10,6 +10,8 @@ import { Picker } from 'emoji-mart';
 import CustomAvatar from '../common/components/CustomAvatar';
 import PrivacySelect from './PrivacySelect';
 
+import config from '../../config/config';
+
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -83,7 +85,7 @@ const PostForm = ({
     <>
       <StatusFormStyled>
         <UserInfoContainer>
-          <CustomAvatar size={50} src={`http://localhost:8080/api/user/avatar/${id}?${new Date().getTime()}`} />
+          <CustomAvatar size={50} id={id} />
           <span className='user-name'>{name}</span>
         </UserInfoContainer>{' '}
       </StatusFormStyled>

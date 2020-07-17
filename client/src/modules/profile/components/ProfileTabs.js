@@ -1,29 +1,22 @@
-import React from "react";
-import get from "lodash/get";
-import { Tabs } from "antd";
-import { Link } from "react-router-dom";
-import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import React from 'react';
+import get from 'lodash/get';
+import { Tabs } from 'antd';
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
 
-import CustomAvatar from "../../common/components/CustomAvatar";
-import PostContainer from "../../post/PostContainer";
+import CustomAvatar from '../../common/components/CustomAvatar';
+import PostContainer from '../../post/PostContainer';
 
-import * as actions from "../../../system/store/post/post.actions";
+import * as actions from '../../../system/store/post/post.actions';
 
 const { TabPane } = Tabs;
 
-const ProfileTabs = ({
-  posts,
-  following,
-  followers,
-  loading,
-  meta,
-  userId,
-}) => {
+const ProfileTabs = ({ posts, following, followers, loading, meta, userId }) => {
   const dispatch = useDispatch();
-  const page = get(meta, "current_page");
-  const limit = get(meta, "per_page");
-  const totalPage = get(meta, "total_page");
+  const page = get(meta, 'current_page');
+  const limit = get(meta, 'per_page');
+  const totalPage = get(meta, 'total_page');
 
   const fetchMoreUserPost = () => {
     dispatch(
@@ -35,42 +28,30 @@ const ProfileTabs = ({
   };
 
   return (
-    <TabContainerStyled type="card">
-      <TabPane tab="Posts" key="posts">
-        <PostContainer
-          posts={posts}
-          loading={loading}
-          action={fetchMoreUserPost}
-          page={page}
-          totalPage={totalPage}
-        />
+    <TabContainerStyled type='card'>
+      <TabPane tab='Posts' key='posts'>
+        <PostContainer posts={posts} loading={loading} action={fetchMoreUserPost} page={page} totalPage={totalPage} />
       </TabPane>
-      <TabPanelStyled tab="Following" key="following">
+      <TabPanelStyled tab='Following' key='following'>
         {following.map((people) => {
-          const id = get(people, "_id");
-          const name = get(people, "name");
+          const id = get(people, '_id');
+          const name = get(people, 'name');
 
           return (
             <UserItemStyled key={id} to={`/user/profile/${id}`}>
-              <CustomAvatar
-                size={70}
-                src={`http://localhost:8080/api/user/avatar/${id}?${new Date().getTime()}`}
-              />
+              <CustomAvatar size={70} id={id} />
               <UserName>{name}</UserName>
             </UserItemStyled>
           );
         })}
       </TabPanelStyled>
-      <TabPanelStyled tab="Followers" key="followers">
+      <TabPanelStyled tab='Followers' key='followers'>
         {followers.map((people) => {
-          const id = get(people, "_id");
-          const name = get(people, "name");
+          const id = get(people, '_id');
+          const name = get(people, 'name');
           return (
             <UserItemStyled key={id} to={`/user/profile/${id}`}>
-              <CustomAvatar
-                size={70}
-                src={`http://localhost:8080/api/user/avatar/${id}?${new Date().getTime()}`}
-              />
+              <CustomAvatar size={70} id={id} />
               <UserName>{name}</UserName>
             </UserItemStyled>
           );

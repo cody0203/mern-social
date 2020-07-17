@@ -8,6 +8,8 @@ import { EllipsisOutlined, LikeFilled } from '@ant-design/icons';
 import CustomAvatar from '../common/components/CustomAvatar';
 import moment from 'moment';
 
+import config from '../../config/config';
+
 import CustomDeleteConfirmModal from '../common/components/CustomDeleteConfirmModal';
 import CommentField from './CommentField';
 
@@ -148,10 +150,7 @@ const CommentItem = ({
   return (
     <CommentStyled $isReply={isReply}>
       <Link to={`/user/profile/${posterId}`}>
-        <CustomAvatar
-          size={!isReply ? 30 : 25}
-          src={`http://localhost:8080/api/user/avatar/${posterId}?${new Date().getTime()}`}
-        />
+        <CustomAvatar size={!isReply ? 30 : 25} id={posterId} />
       </Link>
       {!isEditCommentInputVisible && (
         <ContentContainerStyled>

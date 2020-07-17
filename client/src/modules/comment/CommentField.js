@@ -4,6 +4,8 @@ import { get, includes } from 'lodash';
 import { useSelector } from 'react-redux';
 import { Input } from 'antd';
 
+import config from '../../config/config';
+
 import CustomAvatar from '../common/components/CustomAvatar';
 
 const CommentField = forwardRef((props, ref) => {
@@ -16,7 +18,7 @@ const CommentField = forwardRef((props, ref) => {
   return (
     <>
       <CommentInputContainer>
-        <CustomAvatar size={30} src={`http://localhost:8080/api/user/avatar/${id}?${new Date().getTime()}`} />
+        <CustomAvatar size={30} id={id} />
 
         <CommentInput
           ref={ref}

@@ -41,10 +41,7 @@ const WhoToFollow = ({ id, auth }) => {
                     <ListItemStyled>
                       {/* <ItemLinkStyled to={`/user/profile/${get(item, '_id')}`}> */}
                       <UserInfoContainer to={`/user/profile/${userId}`}>
-                        <CustomAvatar
-                          size={50}
-                          src={`http://localhost:8080/api/user/avatar/${userId}?${new Date().getTime()}`}
-                        />
+                        <CustomAvatar size={50} id={userId} />
                         <span className='user-name'>{userName}</span>
                       </UserInfoContainer>
                       <Button type='primary' onClick={followUserHandler.bind(this, userId)} loading={followUserLoading}>
