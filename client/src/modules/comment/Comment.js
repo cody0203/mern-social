@@ -45,6 +45,26 @@ const Comment = ({ comment }) => {
     socket.on('create-reply', ({ data }) => {
       dispatch(postActions.updatePostListData(data));
     });
+
+    socket.on('create-comment', ({ data }) => {
+      dispatch(postActions.updatePostListData(data));
+    });
+
+    socket.on('delete-comment', ({ data }) => {
+      dispatch(postActions.updatePostListData(data));
+    });
+
+    socket.on('like-comment', ({ data }) => {
+      dispatch(postActions.updatePostListData(data));
+    });
+
+    socket.on('edit-comment', ({ data }) => {
+      dispatch(postActions.updatePostListData(data));
+    });
+
+    socket.on('delete-reply', ({ data }) => {
+      dispatch(postActions.updatePostListData(data));
+    });
   }, []);
 
   useEffect(() => {

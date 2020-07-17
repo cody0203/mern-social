@@ -1,4 +1,4 @@
-import * as types from "./comment.types";
+import * as types from './comment.types';
 
 const INITIAL_STATE = {
   createCommentLoading: false,
@@ -80,7 +80,7 @@ const commentReducer = (state = INITIAL_STATE, action) => {
         deleteCommentLoading: false,
       };
 
-    case types.DELETE_COMMENT.START:
+    case types.DELETE_COMMENT.FAILURE:
       return {
         ...state,
         deleteCommentLoading: false,

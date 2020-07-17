@@ -20,8 +20,9 @@ const createComment = async (req, res, next) => {
     post.comments.push(commentId);
     await post.save();
     await post.populate(postPopulateQuery).execPopulate();
+    socketEmitEvent({ ownerId, eventName: 'create-comment', eventData: { action: 'created', data: post } });
 
-    return res.status(200).json({ data: post });
+    return res.status(200).json({ message: 'Successfully' });
   } catch (err) {
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
@@ -44,8 +45,9 @@ const likeComment = async (req, res, next) => {
     comment.likes = uniq(likedBy);
     await comment.save();
     const post = await Post.findById(postId).populate(postPopulateQuery).exec();
+    socketEmitEvent({ ownerId: userId, eventName: 'like-comment', eventData: { action: 'created', data: post } });
 
-    return res.status(200).json({ data: post });
+    return res.status(200).json({ message: 'Successfully' });
   } catch (err) {
     console.log(err);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
@@ -55,6 +57,7 @@ const likeComment = async (req, res, next) => {
 const deleteComment = async (req, res, next) => {
   try {
     const comment = get(req, 'comment');
+    const ownerId = get(comment, 'owner._id');
     const commentId = get(comment, '_id');
     const postId = get(comment, 'postId');
     await Comment.deleteOne({ _id: commentId });
@@ -66,7 +69,9 @@ const deleteComment = async (req, res, next) => {
       .exec();
     // const post = await Post.findById(postId).populate(postPopulateQuery).exec();
 
-    return res.status(200).json({ message: 'Comment deleted', data: post });
+    socketEmitEvent({ ownerId, eventName: 'delete-comment', eventData: { action: 'deleted', data: post } });
+
+    return res.status(200).json({ message: 'Comment deleted' });
   } catch (err) {
     console.log(err);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
@@ -76,6 +81,7 @@ const deleteComment = async (req, res, next) => {
 const editComment = async (req, res, next) => {
   try {
     const comment = get(req, 'comment');
+    const ownerId = get(comment, 'owner._id');
     const postId = get(comment, 'postId');
     const { content } = get(req, 'body');
 
@@ -83,6 +89,7 @@ const editComment = async (req, res, next) => {
     await comment.save();
 
     const post = await Post.findById(postId).populate(postPopulateQuery).exec();
+    socketEmitEvent({ ownerId, eventName: 'edit-comment', eventData: { action: 'deleted', data: post } });
 
     return res.status(200).json({ data: post });
   } catch (err) {
@@ -118,7 +125,7 @@ const createReply = async (req, res, next) => {
 
     socketEmitEvent({ ownerId, eventName: 'create-reply', eventData: { action: 'created', data: post } });
 
-    // return res.status(200).json({ message: 'Successfully' });
+    return res.status(200).json({ message: 'Successfully' });
   } catch (err) {
     console.log(err);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
@@ -128,6 +135,7 @@ const createReply = async (req, res, next) => {
 const deleteReply = async (req, res, next) => {
   try {
     const reply = get(req, 'comment');
+    const ownerId = get(reply, 'owner._id');
     const replyId = get(reply, '_id');
     const commentId = get(reply, 'commentId');
     const postId = get(reply, 'postId');
@@ -136,8 +144,9 @@ const deleteReply = async (req, res, next) => {
     await Comment.findByIdAndUpdate(commentId, { $pull: { replies: replyId } });
 
     const post = await Post.findById(postId).populate(postPopulateQuery).exec();
+    socketEmitEvent({ ownerId, eventName: 'delete-reply', eventData: { action: 'created', data: post } });
 
-    return res.status(200).json({ data: post });
+    return res.status(200).json({ message: 'Deleted' });
   } catch (err) {
     console.log(err);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
