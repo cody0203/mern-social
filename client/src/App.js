@@ -1,17 +1,17 @@
-import React from "react";
-import get from "lodash/get";
-import { Provider } from "react-redux";
-import { createGlobalStyle } from "styled-components";
+import React from 'react';
+import get from 'lodash/get';
+import { Provider } from 'react-redux';
+import { createGlobalStyle } from 'styled-components';
 
-import { BrowserRouter } from "react-router-dom";
-import MainRouter from "./system/MainRouter";
-import CustomLayout from "./modules/layout/Layout";
-import Theme from "./system/Theme";
-import store from "./system/store";
+import { BrowserRouter } from 'react-router-dom';
+import MainRouter from './system/MainRouter';
+import CustomLayout from './modules/layout/Layout';
+import Theme from './system/Theme';
+import store from './system/store';
 
 const GlobalStyle = createGlobalStyle`
   * {
-    color: ${({ theme }) => get(theme, "colors.text")}
+    color: ${({ theme }) => get(theme, 'colors.text')}
   }
 
   body {
@@ -23,6 +23,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
   }
 `;
+
 
 const App = () => {
   return (
