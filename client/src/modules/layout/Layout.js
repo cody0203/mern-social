@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { Drawer, Button } from 'antd';
-import { useHistory } from 'react-router-dom';
-import get from 'lodash/get';
-import CustomMenu from './components/Menu';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import { Drawer, Button } from "antd";
+import { useHistory } from "react-router-dom";
+import get from "lodash/get";
+import CustomMenu from "./components/Menu";
+import { useSelector, useDispatch } from "react-redux";
 
-import Styled from './Layout.styles';
-import auth from '../../system/auth/auth-helper';
+import Styled from "./Layout.styles";
+import auth from "../../system/auth/auth-helper";
 
-import * as authActions from '../../system/store/auth/auth.actions';
+import * as authActions from "../../system/store/auth/auth.actions";
 
 const CustomLayout = ({ children }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [isDrawerMenuOpen, setIsDrawerMenuOpen] = useState(false);
-  const { userInfo } = useSelector((store) => get(store, 'authReducer'));
+  const { userInfo } = useSelector((store) => get(store, "authReducer"));
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const userId = get(userInfo, '_id');
+  const userId = get(userInfo, "_id");
 
   const openMenuDrawerHandler = () => {
     setIsDrawerMenuOpen(true);
@@ -36,7 +36,7 @@ const CustomLayout = ({ children }) => {
 
   const signOutHandler = () => {
     setIsDrawerMenuOpen(false);
-    auth.clearToken(() => history.push('/'));
+    auth.clearToken(() => history.push("/"));
     dispatch(authActions.clearAuthState());
   };
 
@@ -49,34 +49,46 @@ const CustomLayout = ({ children }) => {
         signOutHandler={signOutHandler}
       />
       <Styled.ContentStyled>
-        <div className='site-layout-content'>{children}</div>
+        <div className="site-layout-content">{children}</div>
       </Styled.ContentStyled>
 
       <Drawer
-        title='Quackbook'
-        placement='left'
+        title="Quackbook"
+        placement="left"
         closable={false}
         onClose={closeMenuDrawerHandler}
         visible={isDrawerMenuOpen}
       >
-        <Styled.DrawerLinkStyled to='/' onClick={closeMenuDrawerHandler}>
+        <Styled.DrawerLinkStyled to="/" onClick={closeMenuDrawerHandler}>
           Home
         </Styled.DrawerLinkStyled>
 
         {!isAuthenticated && [
-          <Styled.DrawerLinkStyled to='/sign-up' onClick={closeMenuDrawerHandler}>
+          <Styled.DrawerLinkStyled
+            to="/sign-up"
+            onClick={closeMenuDrawerHandler}
+            key="sign-up"
+          >
             Sign Up
           </Styled.DrawerLinkStyled>,
-          <Styled.DrawerLinkStyled to='/sign-in' onClick={closeMenuDrawerHandler}>
+          <Styled.DrawerLinkStyled
+            to="/sign-in"
+            onClick={closeMenuDrawerHandler}
+            key="sign-in"
+          >
             Sign In
           </Styled.DrawerLinkStyled>,
         ]}
 
         {isAuthenticated && [
-          <Styled.DrawerLinkStyled to={`/user/profile/${userId}`} onClick={closeMenuDrawerHandler}>
+          <Styled.DrawerLinkStyled
+            to={`/user/profile/${userId}`}
+            onClick={closeMenuDrawerHandler}
+            key="profile"
+          >
             My Profile
           </Styled.DrawerLinkStyled>,
-          <Button type='primary' onClick={signOutHandler}>
+          <Button type="primary" onClick={signOutHandler} key="sign-out">
             Sign Out
           </Button>,
         ]}

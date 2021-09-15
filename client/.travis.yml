@@ -1,0 +1,16 @@
+language: generic
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker build -t dockerize-quack-book/react:v1 -f Dockerfile.dev .
+
+script:
+  - docker run -e CI=true dockerize-quack-book/react:v1 npm run test
+
+after_success:
+  - docker build -t dockerize-quack-book/react:v1 .
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push dockerize-quack-book/react:v1
