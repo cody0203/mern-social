@@ -173,7 +173,7 @@ const Post = ({ post }) => {
       <PostContentStyled>
         <TopContainerStyled>
           <Link to={`/user/profile/${ownerId}`}>
-            <CustomAvatar size={50} src={`http://localhost:8080/api/user/avatar/${ownerId}?${new Date().getTime()}`} />
+            <CustomAvatar size={50} id={ownerId} />
           </Link>
           <TopContentStyled>
             <OwnerNameStyled to={`/user/profile/${ownerId}`}>{ownerName}</OwnerNameStyled>

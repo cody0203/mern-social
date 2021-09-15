@@ -17,7 +17,7 @@ const CommentField = React.forwardRef((props, ref) => {
   return (
     <>
       <CommentInputContainer>
-        <CustomAvatar size={30} src={`http://localhost:8080/api/user/avatar/${id}?${new Date().getTime()}`} />
+        <CustomAvatar size={30} id={id} />
 
         <CommentInput
           ref={ref}

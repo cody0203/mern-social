@@ -9,7 +9,7 @@
   "scripts": {
     "development": "nodemon",
     "build": "webpack --mode=production --config webpack.config.server.js",
-    "heroku-postbuild": "webpack -p"
+    "start": "NODE_ENV=production node ./dist/server.generated.js"
   },
   "devDependencies": {
     "@babel/core": "^7.10.3",

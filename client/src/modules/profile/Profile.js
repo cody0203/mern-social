@@ -118,7 +118,7 @@ const Profile = () => {
             <Styled.TopContentStyled>
               <CustomAvatar
                 size={70}
-                src={`http://localhost:8080/api/user/avatar/${userId}?${new Date().getTime()}`}
+                id={userId}
               />
               <Styled.TextInfoStyled>
                 <Styled.NameStyled>{name}</Styled.NameStyled>

@@ -83,7 +83,7 @@ const PostForm = ({
     <>
       <StatusFormStyled>
         <UserInfoContainer>
-          <CustomAvatar size={50} src={`http://localhost:8080/api/user/avatar/${id}?${new Date().getTime()}`} />
+          <CustomAvatar size={50} id={id} />
           <span className='user-name'>{name}</span>
         </UserInfoContainer>{' '}
       </StatusFormStyled>

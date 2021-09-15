@@ -43,7 +43,7 @@ const WhoToFollow = ({ id, auth }) => {
                       <UserInfoContainer to={`/user/profile/${userId}`}>
                         <CustomAvatar
                           size={50}
-                          src={`http://localhost:8080/api/user/avatar/${userId}?${new Date().getTime()}`}
+                          id={userId}
                         />
                         <span className='user-name'>{userName}</span>
                       </UserInfoContainer>

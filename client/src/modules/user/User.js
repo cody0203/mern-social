@@ -31,40 +31,6 @@ const User = () => {
     <Styled.MainContainerStyled>
       <NewFeeds />
       <WhoToFollow id={id} auth={auth} />
-      {/* <Styled.WhoToFollowContainerStyled>
-        <CustomHeader>Who to follow</CustomHeader>
-        {userListLoading ? null : (
-          <List
-            bordered
-            dataSource={userListData}
-            rowKey={(record) => get(record, '_id')}
-            renderItem={(item) => {
-              const userName = get(item, 'name');
-              const userId = get(item, '_id');
-              return (
-                <>
-                  {!auth.isAuthenticated() ? (
-                    <List.Item>{userName}</List.Item>
-                  ) : (
-                    <Styled.ListItemStyled>
-                      <Styled.UserInfoContainer to={`/user/profile/${userId}`}>
-                        <CustomAvatar
-                          size={50}
-                          src={`http://localhost:8080/api/user/avatar/${userId}?${new Date().getTime()}`}
-                        />
-                        <span className='user-name'>{userName}</span>
-                      </Styled.UserInfoContainer>
-                      <Button type='primary' onClick={followUserHandler.bind(this, userId)} loading={followUserLoading}>
-                        Follow
-                      </Button>
-                    </Styled.ListItemStyled>
-                  )}
-                </>
-              );
-            }}
-          />
-        )}
-      </Styled.WhoToFollowContainerStyled> */}
     </Styled.MainContainerStyled>
   );
 };

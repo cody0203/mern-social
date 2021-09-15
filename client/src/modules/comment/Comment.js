@@ -158,35 +158,6 @@ const Comment = ({ comment }) => {
 
   return (
     <>
-      {/* <CommentStyled>
-        <Link to={`/user/profile/${posterId}`}>
-          <CustomAvatar size={30} src={`http://localhost:8080/api/user/avatar/${posterId}?${new Date().getTime()}`} />
-        </Link>
-        <ContentContainerStyled>
-          <div>
-            <ContentStyled>
-              <PosterNameStyled to={`/user/profile/${posterId}`}>{posterName}</PosterNameStyled> {content}{' '}
-              {totalLike > 0 && !isShortComment && <>{likeContainer}</>}
-            </ContentStyled>{' '}
-            <CommentActionsContainerStyled>
-              <LikeActionStyled onClick={likeCommentHandler} $isLiked={isLiked}>
-                Like
-              </LikeActionStyled>
-              <span> · </span>
-              <CommentActionStyled onClick={showReplyInput}>Reply</CommentActionStyled>
-            </CommentActionsContainerStyled>
-          </div>{' '}
-          {totalLike > 0 && isShortComment && <>{likeContainer}</>}
-          <Dropdown
-            visible={isDropdownVisible}
-            overlay={menu}
-            trigger={['click']}
-            onVisibleChange={changeDropdownVisibleHandler}
-          >
-            <MoreIconStyled $isVisible={isDropdownVisible} className={`${!isShortComment ? 'long-comment' : ''}`} />
-          </Dropdown>
-        </ContentContainerStyled>
-      </CommentStyled> */}
       <CommentItem
         comment={comment}
         likeCommentHandler={likeCommentHandler}

@@ -43,7 +43,7 @@ const NewFeeds = () => {
 
 const NewFeedsContainerStyled = styled.div`
   flex: 1;
-  margin: auto 24px 24px auto;
+  margin: 0 24px 24px auto;
 
   @media (max-width: 768px) {
     margin: 0;

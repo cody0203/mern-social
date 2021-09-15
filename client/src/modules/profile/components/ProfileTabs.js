@@ -54,7 +54,7 @@ const ProfileTabs = ({
             <UserItemStyled key={id} to={`/user/profile/${id}`}>
               <CustomAvatar
                 size={70}
-                src={`http://localhost:8080/api/user/avatar/${id}?${new Date().getTime()}`}
+                id={id}
               />
               <UserName>{name}</UserName>
             </UserItemStyled>
@@ -69,7 +69,7 @@ const ProfileTabs = ({
             <UserItemStyled key={id} to={`/user/profile/${id}`}>
               <CustomAvatar
                 size={70}
-                src={`http://localhost:8080/api/user/avatar/${id}?${new Date().getTime()}`}
+                id={id}
               />
               <UserName>{name}</UserName>
             </UserItemStyled>

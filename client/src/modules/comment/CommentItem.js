@@ -150,7 +150,7 @@ const CommentItem = ({
       <Link to={`/user/profile/${posterId}`}>
         <CustomAvatar
           size={!isReply ? 30 : 25}
-          src={`http://localhost:8080/api/user/avatar/${posterId}?${new Date().getTime()}`}
+          id={posterId}
         />
       </Link>
       {!isEditCommentInputVisible && (
