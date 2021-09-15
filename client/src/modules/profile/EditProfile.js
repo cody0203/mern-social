@@ -17,6 +17,8 @@ import Styled from './EditProfile.styles';
 
 import * as actions from '../../system/store/user/user.actions';
 
+import * as config from '../../config/config';
+
 const EditProfile = () => {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -77,7 +79,7 @@ const EditProfile = () => {
       {userProfileLoading ? null : (
         <CustomCard width={600} title='Edit Profile'>
           <Styled.AvatarContainer>
-            <CustomAvatar size={70} src={`http://localhost:8080/api/user/avatar/${userId}?${new Date().getTime()}`} />
+            <CustomAvatar size={70} id={userId} />
 
             <Upload {...uploadProps} fileList={tempUploadAvatar} className='upload-container'>
               <Button>

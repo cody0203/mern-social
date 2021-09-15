@@ -4,6 +4,7 @@ import get from 'lodash/get';
 import { Route, Switch, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { createBrowserHistory } from 'history';
+import socket from './socket';
 
 import Home from '../modules/home/Home';
 import User from '../modules/user/User';
@@ -23,6 +24,19 @@ const MainRouter = () => {
   const location = useLocation();
 
   const { userInfo } = useSelector((store) => get(store, 'authReducer'));
+
+  useEffect(() => {
+    if (!isEmpty(userInfo)) {
+      const following = get(userInfo, 'following');
+      const userId = get(userInfo, '_id');
+      socket.emit('join-room', { userId });
+
+      socket.on('connect', () => {
+        console.log('On Connect');
+        socket.emit('join-room', { userId });
+      });
+    }
+  }, [userInfo]);
 
   useEffect(() => {
     if (auth.isAuthenticated()) {

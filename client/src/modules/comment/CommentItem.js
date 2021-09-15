@@ -8,6 +8,8 @@ import { EllipsisOutlined, LikeFilled } from '@ant-design/icons';
 import CustomAvatar from '../common/components/CustomAvatar';
 import moment from 'moment';
 
+import config from '../../config/config';
+
 import CustomDeleteConfirmModal from '../common/components/CustomDeleteConfirmModal';
 import CommentField from './CommentField';
 
@@ -148,10 +150,7 @@ const CommentItem = ({
   return (
     <CommentStyled $isReply={isReply}>
       <Link to={`/user/profile/${posterId}`}>
-        <CustomAvatar
-          size={!isReply ? 30 : 25}
-          src={`http://localhost:8080/api/user/avatar/${posterId}?${new Date().getTime()}`}
-        />
+        <CustomAvatar size={!isReply ? 30 : 25} id={posterId} />
       </Link>
       {!isEditCommentInputVisible && (
         <ContentContainerStyled>
@@ -176,23 +175,20 @@ const CommentItem = ({
               )}
             </ContentStyled>{' '}
             <CommentActionsContainerStyled>
+              {isFake && <span>Posting...</span>}
               {!isFake && (
                 <>
                   <LikeActionStyled onClick={likeCommentHandler.bind(this, id)} $isLiked={isLiked}>
                     Like
                   </LikeActionStyled>
-                  {!isReply && (
-                    <>
-                      <span> · </span>
-
-                      <CommentActionStyled onClick={showReplyInput}>Reply</CommentActionStyled>
-                    </>
-                  )}
                   <span> · </span>
+
+                  <CommentActionStyled onClick={showReplyInput}>Reply</CommentActionStyled>
+                  <span> · </span>
+
+                  <span>{moment(created).fromNow()}</span>
                 </>
               )}
-
-              <span>{moment(created).fromNow()}</span>
             </CommentActionsContainerStyled>
           </div>{' '}
           {/* {totalLike > 0 && isShortComment && <>{likeContainer}</>} */}
@@ -246,10 +242,6 @@ const CommentStyled = styled.div`
   display: flex;
   align-items: flex-start;
   padding: 0 36px 16px 16px;
-
-  &:first-child {
-    padding-top: ${({ $isReply }) => (!$isReply ? '16px' : 0)};
-  }
 `;
 
 const CommentActionStyled = styled.span`

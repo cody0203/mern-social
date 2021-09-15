@@ -5,6 +5,7 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Tooltip, Input, Dropdown, Menu } from 'antd';
 import shortid from 'shortid';
+
 import {
   HeartFilled,
   HeartOutlined,
@@ -16,6 +17,8 @@ import {
   LoadingOutlined,
 } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
+
+import config from '../../config/config';
 
 import CustomAvatar from '../common/components/CustomAvatar';
 import PrivacySelect from './PrivacySelect';
@@ -173,7 +176,7 @@ const Post = ({ post }) => {
       <PostContentStyled>
         <TopContainerStyled>
           <Link to={`/user/profile/${ownerId}`}>
-            <CustomAvatar size={50} src={`http://localhost:8080/api/user/avatar/${ownerId}?${new Date().getTime()}`} />
+            <CustomAvatar size={50} id={ownerId} />
           </Link>
           <TopContentStyled>
             <OwnerNameStyled to={`/user/profile/${ownerId}`}>{ownerName}</OwnerNameStyled>
@@ -299,8 +302,9 @@ const ContentStyled = styled.div`
 `;
 
 const ActionContainerStyled = styled.div`
-  padding: 12px 16px;
   display: flex;
+  padding: 12px 16px;
+  margin-bottom: 16px;
 `;
 
 const ActionIconContainer = styled.div`

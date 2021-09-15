@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import { get, includes } from 'lodash';
 import { useSelector } from 'react-redux';
 import { Input } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+
+import config from '../../config/config';
 
 import CustomAvatar from '../common/components/CustomAvatar';
 
-const CommentField = React.forwardRef((props, ref) => {
+const CommentField = forwardRef((props, ref) => {
   const { ownerId, value, onPressEnter, onChange, currentId, targetId, loading } = props;
 
   const isCommenting = currentId === targetId;
@@ -17,7 +18,7 @@ const CommentField = React.forwardRef((props, ref) => {
   return (
     <>
       <CommentInputContainer>
-        <CustomAvatar size={30} src={`http://localhost:8080/api/user/avatar/${id}?${new Date().getTime()}`} />
+        <CustomAvatar size={30} id={id} />
 
         <CommentInput
           ref={ref}
@@ -26,7 +27,6 @@ const CommentField = React.forwardRef((props, ref) => {
           onPressEnter={onPressEnter}
           onChange={onChange}
           // disabled={isCommenting && loading}
-          suffix={isCommenting && loading && <LoadingOutlined />}
         />
       </CommentInputContainer>
     </>
