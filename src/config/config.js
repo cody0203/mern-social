@@ -1,7 +1,7 @@
 const config = {
   server:
     !process.env.NODE_ENV || process.env.NODE_ENV === "development"
-      ? "https://evening-brook-56461.herokuapp.com"
+      ? "http://localhost:8080"
       : "https://evening-brook-56461.herokuapp.com",
 };
 
