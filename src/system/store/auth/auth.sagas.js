@@ -29,7 +29,7 @@ function* signIn({ payload }) {
 function* fetchUserInfo() {
   try {
     const response = yield call(apis.fetchUserInfo);
-    const { user } = response.data;
+    const user = response.data;
 
     yield put(actions.fetchUserInfoSuccess(user));
   } catch (err) {
