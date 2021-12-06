@@ -1,6 +1,5 @@
 import React from 'react';
 import { get } from 'lodash';
-import styled from 'styled-components';
 
 import Comment from './Comment';
 

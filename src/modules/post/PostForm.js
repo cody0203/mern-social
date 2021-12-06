@@ -1,35 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { get, isEmpty } from 'lodash';
-import { Input, Button, Select, Popover, Upload } from 'antd';
-import { useSelector, useDispatch } from 'react-redux';
-import { CameraFilled, SmileFilled } from '@ant-design/icons';
-import 'emoji-mart/css/emoji-mart.css';
-import { Picker } from 'emoji-mart';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import { get, isEmpty } from "lodash";
+import { Input, Button, Popover } from "antd";
+import { SmileFilled } from "@ant-design/icons";
+import "emoji-mart/css/emoji-mart.css";
+import { Picker } from "emoji-mart";
 
-import CustomAvatar from '../common/components/CustomAvatar';
-import PrivacySelect from './PrivacySelect';
+import CustomAvatar from "../common/components/CustomAvatar";
+import PrivacySelect from "./PrivacySelect";
+import { useGetUserInfo } from "../../system/api/user";
 
 const { TextArea } = Input;
-const { Option } = Select;
 
 const PostForm = ({
   action,
   submitButtonTitle,
   loading,
-  initialValue = '',
-  isClearingState = false,
-  publicStatus = 'public',
+  initialValue = "",
+  publicStatus = "public",
   postId,
 }) => {
-  const dispatch = useDispatch();
-  const [value, setValue] = useState('');
-  const [isSubmit, setIsSubmit] = useState(false);
-  const [tempUploadAvatar, setTempUploadAvatar] = useState(null);
+  const [value, setValue] = useState("");
   const [isPublicPost, setIsPublicPost] = useState(publicStatus);
-  const { userInfo } = useSelector((store) => get(store, 'authReducer'));
-  const id = get(userInfo, '_id');
-  const name = get(userInfo, 'name');
+  const { data } = useGetUserInfo();
+  const id = get(data, "_id");
+  const name = get(data, "name");
 
   useEffect(() => {
     setValue(initialValue);
@@ -39,15 +34,8 @@ const PostForm = ({
     setIsPublicPost(publicStatus);
   }, [publicStatus]);
 
-  useEffect(() => {
-    if ((!loading && isSubmit) || isClearingState) {
-      setValue(initialValue);
-      setIsPublicPost(publicStatus);
-    }
-  }, [loading, isSubmit, isClearingState]);
-
   const onChangeCommentHandler = (e) => {
-    const value = get(e, 'target.value');
+    const value = get(e, "target.value");
 
     setValue(value);
   };
@@ -57,26 +45,19 @@ const PostForm = ({
   };
 
   const selectEmojiHandler = (emoji) => {
-    const newValue = `${value}${get(emoji, 'native')}`;
+    const newValue = `${value}${get(emoji, "native")}`;
     setValue(newValue);
   };
 
   const createPostHandler = () => {
     if (isEmpty(value)) return;
-    const isPublic = isPublicPost === 'public' ? true : false;
-    dispatch(action({ id: postId, params: { content: value, public: isPublic } }));
-    setIsSubmit(true);
-  };
-
-  const uploadProps = {
-    onRemove: (file) => {
-      setTempUploadAvatar([]);
-    },
-    beforeUpload: (file) => {
-      setTempUploadAvatar([file]);
-      return false;
-    },
-    tempUploadAvatar,
+    const isPublic = isPublicPost === "public" ? true : false;
+    action({
+      id: postId,
+      ownerId: id,
+      ownerName: name,
+      params: { content: value, public: isPublic },
+    });
   };
 
   return (
@@ -84,8 +65,8 @@ const PostForm = ({
       <StatusFormStyled>
         <UserInfoContainer>
           <CustomAvatar size={50} id={id} />
-          <span className='user-name'>{name}</span>
-        </UserInfoContainer>{' '}
+          <span className="user-name">{name}</span>
+        </UserInfoContainer>{" "}
       </StatusFormStyled>
 
       <TextAreaContainerStyled>
@@ -97,24 +78,34 @@ const PostForm = ({
         />
 
         <ExtraContentContainerStyled>
-          {/* <Upload
-            {...uploadProps}
-            fileList={tempUploadAvatar}
-            className="upload-container"
-          >
-            <CameraFilled />
-          </Upload> */}
           <Popover
-            content={<Picker set='apple' showPreview={false} showSkinTones={false} onSelect={selectEmojiHandler} />}
-            trigger='click'
+            content={
+              <Picker
+                set="apple"
+                showPreview={false}
+                showSkinTones={false}
+                onSelect={selectEmojiHandler}
+              />
+            }
+            trigger="click"
           >
             <EmojiPickerIcon />
           </Popover>
         </ExtraContentContainerStyled>
       </TextAreaContainerStyled>
       <ActionContainerStyled>
-        <PrivacySelect changePrivacyPostHandler={changePrivacyPostHandler} isPublic={isPublicPost} shorten={false} />
-        <PostButtonStyled type='primary' disabled={isEmpty(value)} onClick={createPostHandler} loading={loading}>
+        <PrivacySelect
+          changePrivacyPostHandler={changePrivacyPostHandler}
+          isPublic={isPublicPost}
+          shorten={false}
+          disabled={loading}
+        />
+        <PostButtonStyled
+          type="primary"
+          disabled={isEmpty(value)}
+          onClick={createPostHandler}
+          loading={loading}
+        >
           {submitButtonTitle}
         </PostButtonStyled>
       </ActionContainerStyled>
@@ -168,14 +159,14 @@ const ExtraContentContainerStyled = styled.div`
 
 const EmojiPickerIcon = styled(SmileFilled)`
   font-size: 20px;
-  color: ${({ theme }) => get(theme, 'colors.primary')};
+  color: ${({ theme }) => get(theme, "colors.primary")};
 `;
 
 const ActionContainerStyled = styled.div`
   display: flex;
   align-items: center;
   padding: 16px;
-  background-color: ${({ theme }) => get(theme, 'colors.background')};
+  background-color: ${({ theme }) => get(theme, "colors.background")};
 `;
 
 const PostButtonStyled = styled(Button)`

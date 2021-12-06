@@ -1,13 +1,13 @@
 import React from "react";
 import get from "lodash/get";
-import { Provider } from "react-redux";
 import { createGlobalStyle } from "styled-components";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 import { BrowserRouter } from "react-router-dom";
 import MainRouter from "./system/MainRouter";
 import CustomLayout from "./modules/layout/Layout";
 import Theme from "./system/Theme";
-import store from "./system/store";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -25,17 +25,20 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const App = () => {
+  const queryClient = new QueryClient();
+
   return (
-    <Provider store={store}>
+    <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <GlobalStyle />
         <Theme>
           <CustomLayout>
             <MainRouter />
+            <ReactQueryDevtools />
           </CustomLayout>
         </Theme>
       </BrowserRouter>
-    </Provider>
+    </QueryClientProvider>
   );
 };
 
