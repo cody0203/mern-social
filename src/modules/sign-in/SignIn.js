@@ -1,49 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, Modal } from "antd";
-import get from "lodash/get";
-import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 
 import CustomHeader from "../common/components/CustomHeader";
 import CustomInput from "../common/components/CustomInput";
 import CommonStyled from "../common/styles/Form";
 
-import * as actions from "../../system/store/auth/auth.actions";
-
 import auth from "../../system/auth/auth-helper";
+import { useLogin } from "../../system/api/auth";
 
 const SignIn = () => {
-  const dispatch = useDispatch();
   const [form] = Form.useForm();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const { signInLoading, signInError } = useSelector((store) =>
-    get(store, "authReducer.signIn")
-  );
+  const { error, mutate, isLoading, isError } = useLogin();
 
   useEffect(() => {
-    if (!signInLoading && !signInError) {
+    if (!isLoading && !isError) {
       onClearForm();
     }
-  }, [signInLoading, signInError]);
+  }, [isLoading, isError]);
 
   useEffect(() => {
-    if (signInError) {
+    if (isError) {
       signUpErrorHandler();
     }
-  }, [signInError]);
+  }, [isError]);
 
   useEffect(() => {
     setIsAuthenticated(auth.isAuthenticated());
-  }, [auth.isAuthenticated(), signInLoading]);
-
-  useEffect(() => {
-    return () => {
-      dispatch(actions.clearSignInState());
-    };
-  }, []);
+  }, [isLoading]);
 
   const onFinish = (values) => {
-    dispatch(actions.signInStart({ ...values }));
+    mutate(values);
   };
 
   const onClearForm = () => {
@@ -53,7 +41,7 @@ const SignIn = () => {
   const signUpErrorHandler = () => {
     Modal.error({
       title: "Sign up error",
-      content: signInError,
+      content: error,
       okText: "Try again",
     });
   };
@@ -93,7 +81,7 @@ const SignIn = () => {
           type="password"
         />
 
-        <Button type="primary" htmlType="submit" loading={signInLoading}>
+        <Button type="primary" htmlType="submit" loading={isLoading}>
           Sign in
         </Button>
       </CommonStyled.FormStyled>

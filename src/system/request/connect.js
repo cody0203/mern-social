@@ -1,5 +1,5 @@
 import config from "../../config/config";
-import requestFactory, { HTTP_STATUS } from "./request";
+import requestFactory from "./request";
 
 const request = requestFactory(config.server, {
   commonHeaders: { Accept: "application/json" },

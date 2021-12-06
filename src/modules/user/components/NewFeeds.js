@@ -1,42 +1,29 @@
-import React, { useEffect } from 'react';
-import { get } from 'lodash';
-import styled from 'styled-components';
-import PostForm from '../../post/PostForm';
-import PostContainer from '../../post/PostContainer';
-import { useSelector, useDispatch } from 'react-redux';
-import CustomCard from '../../common/components/CustomCard';
+import React from "react";
+import get from "lodash/get";
+import styled from "styled-components";
+import PostForm from "../../post/PostForm";
+import PostContainer from "../../post/PostContainer";
+import CustomCard from "../../common/components/CustomCard";
 
-import * as actions from '../../../system/store/post/post.actions';
+import { useGetPostList, usePosting } from "../../../system/api/post";
 
 const NewFeeds = () => {
-  const dispatch = useDispatch();
-  const { postListData, postListLoading, postListMeta } = useSelector((store) => get(store, 'postReducer.postList'));
+  const { mutate, isLoading } = usePosting();
 
-  const page = get(postListMeta, 'current_page');
-  const limit = get(postListMeta, 'per_page');
-  const totalPage = get(postListMeta, 'total_page');
+  const { isLoading: getPostListLoading } = useGetPostList({});
 
-  useEffect(() => {
-    dispatch(actions.fetchPostListStart({}));
-  }, []);
+  if (getPostListLoading) return null;
 
-  const { createPostLoading } = useSelector((store) => get(store, 'postReducer'));
-
-  const fetchMorePost = () => {
-    dispatch(actions.fetchPostListStart({ page: page + 1, limit }));
-  };
   return (
     <NewFeedsContainerStyled>
-      <PostFormContainerStyled title='New Feeds' $customPadding='0'>
-        <PostForm action={actions.createPostStart} submitButtonTitle='Post' loading={createPostLoading} />
+      <PostFormContainerStyled title="New Feeds" $customPadding="0">
+        <PostForm
+          action={mutate}
+          submitButtonTitle="Post"
+          loading={isLoading}
+        />
       </PostFormContainerStyled>
-      <PostContainer
-        posts={postListData}
-        loading={postListLoading}
-        page={page}
-        totalPage={totalPage}
-        action={fetchMorePost}
-      />
+      <PostContainer />
     </NewFeedsContainerStyled>
   );
 };
@@ -53,7 +40,7 @@ const NewFeedsContainerStyled = styled.div`
 const PostFormContainerStyled = styled(CustomCard)`
   .ant-card-body {
     padding: 0;
-    background-color: ${({ theme }) => get(theme, 'colors.background')};
+    background-color: ${({ theme }) => get(theme, "colors.background")};
   }
 `;
 

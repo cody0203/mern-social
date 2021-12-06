@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation, useHistory } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import get from "lodash/get";
-import { useSelector } from "react-redux";
 
-import auth from "../../../system/auth/auth-helper";
 import Styled from "./Menu.styles";
 
 const CustomMenu = ({

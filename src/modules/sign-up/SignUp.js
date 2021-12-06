@@ -1,52 +1,40 @@
 import React, { useEffect } from "react";
 import { Button, Form, Modal } from "antd";
-import get from "lodash/get";
-import { useDispatch, useSelector } from "react-redux";
 
 import CustomHeader from "../common/components/CustomHeader";
 import CustomInput from "../common/components/CustomInput";
 import CommonStyled from "../common/styles/Form";
 
-import * as actions from "../../system/store/user/user.actions";
 import { useHistory } from "react-router";
+import { useSignup } from "../../system/api/auth";
 
 const SignUp = () => {
   const history = useHistory();
-  const dispatch = useDispatch();
   const [form] = Form.useForm();
-
-  const { signUpLoading, signUpStatus, signUpError } = useSelector((store) =>
-    get(store, "userReducer.signUp")
-  );
+  const { mutate, isSuccess, isLoading, error, isError } = useSignup();
 
   useEffect(() => {
-    if (!signUpLoading) {
+    if (!isLoading) {
       onClearForm();
     }
-  }, [signUpLoading]);
+  }, [isLoading]);
 
   useEffect(() => {
-    if (signUpStatus) {
+    if (isSuccess) {
       signUpSuccessHandler();
     }
-  }, [signUpStatus]);
+  }, [isSuccess]);
 
   useEffect(() => {
-    if (signUpError) {
+    if (isError) {
       signUpErrorHandler();
     }
-  }, [signUpError]);
-
-  useEffect(() => {
-    return () => {
-      dispatch(actions.clearSignUpState());
-    };
-  }, []);
+  }, [isError]);
 
   useEffect(() => {}, []);
 
   const onFinish = (values) => {
-    dispatch(actions.signUpStart({ ...values }));
+    mutate(values);
   };
 
   const onClearForm = () => {
@@ -65,7 +53,7 @@ const SignUp = () => {
   const signUpErrorHandler = () => {
     Modal.error({
       title: "Sign up error",
-      content: signUpError,
+      content: error,
       okText: "Try again",
     });
   };
@@ -111,7 +99,7 @@ const SignUp = () => {
           type="password"
         />
 
-        <Button type="primary" htmlType="submit" loading={signUpLoading}>
+        <Button type="primary" htmlType="submit" loading={isLoading}>
           Sign up
         </Button>
       </CommonStyled.FormStyled>
