@@ -7,3 +7,15 @@ export const REPLY = "/api/reply";
 export const SIGN_IN = "/auth/sign-in";
 export const SIGN_OUT = "/auth/sign-out";
 export const USER_INFO = "/auth/user-info";
+
+export default {
+  USERS,
+  USER,
+  POSTS,
+  POST,
+  COMMENT,
+  REPLY,
+  SIGN_IN,
+  SIGN_OUT,
+  USER_INFO,
+};

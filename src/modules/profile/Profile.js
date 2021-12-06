@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
 import get from "lodash/get";
 import find from "lodash/find";
-import { Button, Tabs } from "antd";
-import { UserOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useDispatch, useSelector } from "react-redux";
+import { Button } from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useParams, useHistory, Link } from "react-router-dom";
 import moment from "moment";
 
 import auth from "../../system/auth/auth-helper";
-import * as actions from "../../system/store/user/user.actions";
-import * as postActions from "../../system/store/post/post.actions";
 
-import CustomHeader from "../common/components/CustomHeader";
 import CustomDeleteConfirmModal from "../common/components/CustomDeleteConfirmModal";
 import CustomCard from "../common/components/CustomCard";
 import CustomAvatar from "../common/components/CustomAvatar";
@@ -19,45 +15,37 @@ import CustomAvatar from "../common/components/CustomAvatar";
 import ProfileTabs from "./components/ProfileTabs";
 
 import Styled from "./Profile.styles";
-
-const { TabPane } = Tabs;
+import {
+  useDeleteUser,
+  useGetUserById,
+  useGetUserInfo,
+} from "../../system/api/user";
+import { useFollowUserInProfile } from "../../system/api/follow";
+import useUnfollowUser from "../../system/api/follow/useUnfollowUser";
 
 const Profile = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const dispatch = useDispatch();
   const { userId } = useParams();
   const history = useHistory();
-  const { userProfileLoading, userProfileData } = useSelector((store) =>
-    get(store, "userReducer.userProfile")
-  );
-  const { userPostData, userPostLoading, userPostMeta } = useSelector((store) =>
-    get(store, "postReducer.userPost")
-  );
+  const { data: userProfileData, isLoading: userProfileLoading } =
+    useGetUserById(userId);
 
-  const {
-    removeUserLoading,
-    followUserLoading,
-    unFollowUserLoading,
-  } = useSelector((store) => get(store, "userReducer"));
-  const { userInfo } = useSelector((store) => get(store, "authReducer"));
+  const { data: userInfo } = useGetUserInfo();
+  const { mutate: deleteUser, isLoading: removeUserLoading } = useDeleteUser();
+
   const id = get(userInfo, "_id");
   const name = get(userProfileData, "name");
   const email = get(userProfileData, "email");
   const created = get(userProfileData, "created");
   const bio = get(userProfileData, "bio");
-  const avatar = get(userProfileData, "avatar");
-  const posts = get(userProfileData, "posts");
   const following = get(userProfileData, "following");
   const followers = get(userProfileData, "followers");
   const isFollowed = find(followers, { _id: id });
 
-  useEffect(() => {
-    dispatch(actions.fetchUserStart(userId));
-  }, [userId]);
-
-  useEffect(() => {
-    dispatch(postActions.fetchUserPostStart({ id: userId, params: {} }));
-  }, [userId]);
+  const { mutate: onFollow, isLoading: followUserLoading } =
+    useFollowUserInProfile();
+  const { mutate: onUnfollow, isLoading: unFollowUserLoading } =
+    useUnfollowUser(id);
 
   useEffect(() => {
     if (!auth.isAuthenticated()) {
@@ -75,17 +63,15 @@ const Profile = () => {
   };
 
   const removeUserHandler = () => {
-    dispatch(actions.removeUserStart(userId));
+    deleteUser(userId);
   };
 
   const followUserHandler = () => {
-    dispatch(actions.followUserStart({ followingId: userId, followerId: id }));
+    onFollow({ followingId: userId, followerId: id });
   };
 
   const unFollowUserHandler = () => {
-    dispatch(
-      actions.unFollowUserStart({ unFollowingId: userId, unFollowerId: id })
-    );
+    onUnfollow({ unFollowingId: userId, unFollowerId: id });
   };
 
   let followButton = (
@@ -116,10 +102,7 @@ const Profile = () => {
         <CustomCard width={700} title="Profile">
           <Styled.TopStyled>
             <Styled.TopContentStyled>
-              <CustomAvatar
-                size={70}
-                id={userId}
-              />
+              <CustomAvatar size={70} id={userId} />
               <Styled.TextInfoStyled>
                 <Styled.NameStyled>{name}</Styled.NameStyled>
                 <p>{email}</p>
@@ -152,9 +135,6 @@ const Profile = () => {
             <ProfileTabs
               followers={followers}
               following={following}
-              posts={userPostData}
-              loading={userPostLoading}
-              meta={userPostMeta}
               userId={userId}
             />
           </Styled.BottomStyled>

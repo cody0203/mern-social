@@ -1,18 +1,17 @@
-import React, { forwardRef } from 'react';
-import styled from 'styled-components';
-import { get, includes } from 'lodash';
-import { useSelector } from 'react-redux';
-import { Input } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+import React, { forwardRef } from "react";
+import styled from "styled-components";
+import get from "lodash/get";
+import { Input } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { useGetUserInfo } from "../../system/api/user";
+import CustomAvatar from "../common/components/CustomAvatar";
 
-import CustomAvatar from '../common/components/CustomAvatar';
-
-const CommentField = React.forwardRef((props, ref) => {
-  const { ownerId, value, onPressEnter, onChange, currentId, targetId, loading } = props;
+const CommentField = forwardRef((props, ref) => {
+  const { value, onPressEnter, onChange, currentId, targetId, loading } = props;
 
   const isCommenting = currentId === targetId;
-  const { userInfo } = useSelector((store) => get(store, 'authReducer'));
-  const id = get(userInfo, '_id');
+  const { data } = useGetUserInfo();
+  const id = get(data, "_id");
 
   return (
     <>
@@ -21,11 +20,11 @@ const CommentField = React.forwardRef((props, ref) => {
 
         <CommentInput
           ref={ref}
-          placeholder='Write a comment...'
+          placeholder="Write a comment..."
           value={value}
           onPressEnter={onPressEnter}
           onChange={onChange}
-          // disabled={isCommenting && loading}
+          disabled={isCommenting && loading}
           suffix={isCommenting && loading && <LoadingOutlined />}
         />
       </CommentInputContainer>

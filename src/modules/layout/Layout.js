@@ -1,34 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { Drawer, Button } from "antd";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import get from "lodash/get";
 import CustomMenu from "./components/Menu";
-import { useSelector, useDispatch } from "react-redux";
+import { useGetUserInfo } from "../../system/api/user";
 
 import Styled from "./Layout.styles";
 import auth from "../../system/auth/auth-helper";
 
-import * as authActions from "../../system/store/auth/auth.actions";
-
 const CustomLayout = ({ children }) => {
-  const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
   const [isDrawerMenuOpen, setIsDrawerMenuOpen] = useState(false);
-  const { userInfo } = useSelector((store) => get(store, "authReducer"));
+  const { data } = useGetUserInfo();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const userId = get(userInfo, "_id");
+  const userId = get(data, "_id");
 
   const openMenuDrawerHandler = () => {
     setIsDrawerMenuOpen(true);
   };
 
   useEffect(() => {
-    if (auth.isAuthenticated()) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
-  }, [auth.isAuthenticated(), userInfo]);
+    setIsAuthenticated(auth.isAuthenticated());
+  }, [location]);
 
   const closeMenuDrawerHandler = () => {
     setIsDrawerMenuOpen(false);
@@ -37,7 +31,6 @@ const CustomLayout = ({ children }) => {
   const signOutHandler = () => {
     setIsDrawerMenuOpen(false);
     auth.clearToken(() => history.push("/"));
-    dispatch(authActions.clearAuthState());
   };
 
   return (

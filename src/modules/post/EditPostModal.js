@@ -1,12 +1,12 @@
-import React from "react";
-import { get } from "lodash";
+import React, { useEffect } from "react";
+import get from "lodash/get";
 import { Form } from "antd";
 import styled from "styled-components";
 
 import CustomFormModal from "../common/components/CustomFormModal";
 import PostForm from "./PostForm";
 
-import * as actions from "../../system/store/post/post.actions";
+import { useUpdatePost } from "../../system/api/post";
 
 const EditPostModal = ({
   visible,
@@ -14,20 +14,30 @@ const EditPostModal = ({
   initialValue,
   publicStatus,
   postId,
-  loading,
+  post,
 }) => {
+  const { mutate: updatePost, isLoading } = useUpdatePost(post);
+
+  useEffect(() => {
+    if (!isLoading) {
+      onCancel();
+    }
+  }, [isLoading]);
+
   return (
-    <ModalStyled title="Edit post" visible={visible} onCancel={onCancel}>
+    <ModalStyled
+      title="Edit post"
+      visible={visible}
+      onCancel={isLoading ? null : onCancel}
+    >
       <Form>
         <PostForm
           submitButtonTitle="Save"
           initialValue={initialValue}
-          loading={false}
           publicStatus={publicStatus}
-          action={actions.updatePostStart}
-          isClearingState={!visible && true}
+          action={updatePost}
           postId={postId}
-          loading={loading}
+          loading={isLoading}
         />
       </Form>
     </ModalStyled>

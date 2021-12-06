@@ -3,47 +3,17 @@ import get from "lodash/get";
 import { Tabs } from "antd";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
 
 import CustomAvatar from "../../common/components/CustomAvatar";
 import PostContainer from "../../post/PostContainer";
 
-import * as actions from "../../../system/store/post/post.actions";
-
 const { TabPane } = Tabs;
 
-const ProfileTabs = ({
-  posts,
-  following,
-  followers,
-  loading,
-  meta,
-  userId,
-}) => {
-  const dispatch = useDispatch();
-  const page = get(meta, "current_page");
-  const limit = get(meta, "per_page");
-  const totalPage = get(meta, "total_page");
-
-  const fetchMoreUserPost = () => {
-    dispatch(
-      actions.fetchUserPostStart({
-        id: userId,
-        params: { page: page + 1, limit },
-      })
-    );
-  };
-
+const ProfileTabs = ({ following, followers, userId }) => {
   return (
     <TabContainerStyled type="card">
       <TabPane tab="Posts" key="posts">
-        <PostContainer
-          posts={posts}
-          loading={loading}
-          action={fetchMoreUserPost}
-          page={page}
-          totalPage={totalPage}
-        />
+        <PostContainer id={userId} />
       </TabPane>
       <TabPanelStyled tab="Following" key="following">
         {following.map((people) => {
@@ -52,10 +22,7 @@ const ProfileTabs = ({
 
           return (
             <UserItemStyled key={id} to={`/user/profile/${id}`}>
-              <CustomAvatar
-                size={70}
-                id={id}
-              />
+              <CustomAvatar size={70} id={id} />
               <UserName>{name}</UserName>
             </UserItemStyled>
           );
@@ -67,10 +34,7 @@ const ProfileTabs = ({
           const name = get(people, "name");
           return (
             <UserItemStyled key={id} to={`/user/profile/${id}`}>
-              <CustomAvatar
-                size={70}
-                id={id}
-              />
+              <CustomAvatar size={70} id={id} />
               <UserName>{name}</UserName>
             </UserItemStyled>
           );
